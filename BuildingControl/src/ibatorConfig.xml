@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ibatorConfiguration PUBLIC "-//Apache Software Foundation//DTD Apache iBATIS Ibator Configuration 1.0//EN" "http://ibatis.apache.org/dtd/ibator-config_1_0.dtd" >
+<ibatorConfiguration>
+	<classPathEntry
+		location="E:\git2\tour\TourManager\WebRoot\WEB-INF\lib\mysql-connector-java-5.1.16-bin.jar" />
+
+	<ibatorContext id="context1">
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://127.0.0.1:3306/building_control_db"
+			userId="root" password="123456"></jdbcConnection>
+		<javaModelGenerator targetPackage="com.building.model"
+			targetProject="BuildingControl/src" />
+		<sqlMapGenerator targetPackage="com.building.sqlmap"
+			targetProject="BuildingControl/src" />
+		<daoGenerator targetPackage="com.building.dao"
+			targetProject="BuildingControl/src" type="SPRING" />
+		<table tableName="sm_user"></table>
+		
+	</ibatorContext>
+
+</ibatorConfiguration>

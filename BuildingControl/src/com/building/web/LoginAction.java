@@ -1,7 +1,7 @@
 package com.building.web;
 
 import com.building.commons.base.BaseAction;
-import com.building.service.ifc.SmUserServiceIFC;
+import com.building.service.ifc.UserServiceIFC;
 
 @SuppressWarnings( "serial" )
 public class LoginAction extends BaseAction {
@@ -9,7 +9,7 @@ public class LoginAction extends BaseAction {
     /**
      * @Description: 业务代理对象
      */
-    private SmUserServiceIFC smUserServiceProxy;
+    private UserServiceIFC userServiceProxy;
     
     public static final String LOGIN_SUCCESS = "LOGIN_SUCCESS";
     public static final String LOGIN_FAILE = "LOGIN_FAILE";
@@ -30,14 +30,17 @@ public class LoginAction extends BaseAction {
         return LOGIN_SUCCESS;
     }
     
-    public SmUserServiceIFC getSmUserServiceProxy() {
-        return smUserServiceProxy;
+    public UserServiceIFC getUserServiceProxy() {
+        return userServiceProxy;
     }
+
+
     
-    public void setSmUserServiceProxy( SmUserServiceIFC smUserServiceProxy ) {
-        this.smUserServiceProxy = smUserServiceProxy;
+    public void setUserServiceProxy( UserServiceIFC userServiceProxy ) {
+        this.userServiceProxy = userServiceProxy;
     }
-    
+
+
     public String getUsername() {
         return username;
     }

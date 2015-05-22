@@ -62,21 +62,81 @@
 		<property name="smUserServiceProxy" ref="smUserServiceProxy"></property>
 	</bean>
 	
-	<!-- SmUser实体Bean -->
-	<bean id="smUserDao" class="com.building.dao.impl.SmUserDAOImpl" >
+	<!-- User实体Bean -->
+	<bean id="userDao" class="com.building.dao.impl.UserDAOImpl" >
 		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
 	</bean>
 	
-	<bean id="smUserService" class="com.building.service.impl.SmUserServiceImpl">
-		<property name="smUserDao" ref="smUserDao"></property>
+	<bean id="userService" class="com.building.service.impl.UserServiceImpl">
+		<property name="userDao" ref="userDao"></property>
 	</bean>
 	
-	<bean id="smUserServiceProxy" parent="baseTransactionProxy">
-		<property name="target" ref="smUserService"></property>
+	<bean id="userServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="userService"></property>
 	</bean>
 	
-	<bean name="aliasSmUserAction" class="com.building.web.SmUserAction" scope="prototype">
-		<property name="smUserServiceProxy" ref="smUserServiceProxy"></property>
+	<bean name="aliasUserAction" class="com.building.web.UserAction" scope="prototype">
+		<property name="userServiceProxy" ref="userServiceProxy"></property>
 	</bean>
+	
+	
+	
+	
+	<!-- Building实体Bean -->
+	<bean id="buildingDao" class="com.building.dao.impl.BuildingDAOImpl" >
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
+	</bean>
+	
+	<bean id="buildingService" class="com.building.service.impl.BuildingServiceImpl">
+		<property name="buildingDao" ref="buildingDao"></property>
+	</bean>
+	
+	<bean id="buildingServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="buildingService"></property>
+	</bean>
+	
+	<bean name="aliasBuildingAction" class="com.building.web.BuildingAction" scope="prototype">
+		<property name="buildingServiceProxy" ref="buildingServiceProxy"></property>
+	</bean>
+	
+	
+	<!-- Device实体Bean -->
+	<bean id="deviceDao" class="com.building.dao.impl.DeviceDAOImpl" >
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
+	</bean>
+	
+	<bean id="deviceService" class="com.building.service.impl.DeviceServiceImpl">
+		<property name="deviceDao" ref="deviceDao"></property>
+	</bean>
+	
+	<bean id="deviceServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="deviceService"></property>
+	</bean>
+	
+	<bean name="aliasDeviceAction" class="com.building.web.DeviceAction" scope="prototype">
+		<property name="deviceServiceProxy" ref="deviceServiceProxy"></property>
+	</bean>
+	
+	
+	
+	<!-- Schedule实体Bean -->
+	<bean id="scheduleDao" class="com.building.dao.impl.ScheduleDAOImpl" >
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
+	</bean>
+	
+	<bean id="scheduleService" class="com.building.service.impl.ScheduleServiceImpl">
+		<property name="scheduleDao" ref="scheduleDao"></property>
+	</bean>
+	
+	<bean id="scheduleServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="scheduleService"></property>
+	</bean>
+	
+	<bean name="aliasScheduleAction" class="com.building.web.ScheduleAction" scope="prototype">
+		<property name="scheduleServiceProxy" ref="scheduleServiceProxy"></property>
+	</bean>
+	
+	
+		
 
 </beans>

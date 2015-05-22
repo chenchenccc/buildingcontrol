@@ -14,7 +14,10 @@
 			targetProject="BuildingControl/src" />
 		<daoGenerator targetPackage="com.building.dao"
 			targetProject="BuildingControl/src" type="SPRING" />
-		<table tableName="sm_user"></table>
+		<table tableName="user"></table>
+		<table tableName="building"></table>
+		<table tableName="device"></table>
+		<table tableName="schedule"></table>
 		
 	</ibatorContext>
 

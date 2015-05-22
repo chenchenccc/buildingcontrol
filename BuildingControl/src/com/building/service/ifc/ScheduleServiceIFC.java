@@ -4,37 +4,37 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.building.model.SmUser;
+import com.building.model.Schedule;
 
-public interface SmUserServiceIFC {
+public interface ScheduleServiceIFC {
 	
 	/**
 	  * @Description: 获取实体列表 
 	  */
-	List<SmUser> querySmUser4List(HttpServletRequest request, SmUser smUser);
+	List<Schedule> querySchedule4List(HttpServletRequest request, Schedule schedule);
 	
 	
 	/**
 	  * @Description: 查看实体对象 
 	  */
-	SmUser querySmUser4Bean(SmUser smUser);
+	Schedule querySchedule4Bean(Schedule schedule);
 	
 	
 	/**
 	  * @Description: 保存添加实体对象 
 	  */
-	void saveAddSmUser(SmUser smUser);
+	void saveAddSchedule(Schedule schedule);
 	
 	
 	/**
 	  * @Description: 保存编辑实体对象 
 	  */
-	void saveEditSmUser(SmUser smUser);
+	void saveEditSchedule(Schedule schedule);
 	
 	
 	/**
 	  * @Description: 删除实体对象
 	  */
-	void delSmUser(SmUser smUser);
+	void delSchedule(Schedule schedule);
 	
 }

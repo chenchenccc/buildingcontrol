@@ -7,5 +7,8 @@ PUBLIC "-//ibatis.apache.org//DTD sql Map Config 2.0//EN"
 	<settings useStatementNamespaces="true"/>
 	
 	<!-- 系统管理 -->
-	<sqlMap resource="com/building/sqlmap/sm_user_SqlMap.xml" />
+	<sqlMap resource="com/building/sqlmap/user_SqlMap.xml" />
+	<sqlMap resource="com/building/sqlmap/building_SqlMap.xml" />
+	<sqlMap resource="com/building/sqlmap/device_SqlMap.xml" />
+	<sqlMap resource="com/building/sqlmap/schedule_SqlMap.xml" />
 </sqlMapConfig> 

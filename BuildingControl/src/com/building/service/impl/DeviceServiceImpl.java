@@ -13,13 +13,13 @@ import com.building.service.ifc.DeviceServiceIFC;
 
 public class DeviceServiceImpl implements DeviceServiceIFC {
 	/**
-	  * @Description: DAO对象 
-	  */
+	 * @Description: DAO对象 
+	 */
 	private DeviceDAO deviceDao;
 	
 	/**
-	  * @Description: 获取实体列表 
-	  */
+	 * @Description: 获取实体列表 
+	 */
 	public List<Device> queryDevice4List(HttpServletRequest request, Device device) {
 		//构造Criteria
 		DeviceExample example = new DeviceExample();
@@ -30,8 +30,8 @@ public class DeviceServiceImpl implements DeviceServiceIFC {
 	
 	
 	/**
-	  * @Description: 查看实体对象 
-	  */
+	 * @Description: 查看实体对象 
+	 */
 	public Device queryDevice4Bean(Device device) {
 		Device _device = null;
 		//构造Criteria
@@ -45,26 +45,43 @@ public class DeviceServiceImpl implements DeviceServiceIFC {
 	return _device;
 	}
 	/**
-	  * @Description: 保存添加实体对象 
-	  */
+	 * @Description: 保存添加实体对象 
+	 */
 	public void saveAddDevice(Device device) {
 		deviceDao.insert(device);
 	}
 	
 	
 	/**
-	  * @Description: 保存编辑实体对象 
-	  */
+	 * @Description: 保存编辑实体对象 
+	 */
 	public void saveEditDevice(Device device) {
 		deviceDao.updateByPrimaryKey(device);
 	}
 	
 	
 	/**
-	  * @Description: 删除实体对象 
-	  */
+	 * @Description: 删除实体对象 
+	 */
 	public void delDevice(Device device) {
 		deviceDao.updateByPrimaryKeySelective(device);
+	}
+	
+	/**
+	 * @Description: 实体列表总数 
+	 */
+	public int countByExample(Device device) {
+	  DeviceExample example = new DeviceExample();
+	  Criteria criteria = example.createCriteria();
+	  criteria.andIsDelEqualTo( 1 );
+	  return deviceDao.countByExample(example);
+	}
+	
+	/**
+	 * @Description: 根据ID获取对象 
+	 */
+	public Device queryDeviceById(Integer id) {
+	  return deviceDao.selectByPrimaryKey(id);
 	}
 	
 	public DeviceDAO getDeviceDao() {

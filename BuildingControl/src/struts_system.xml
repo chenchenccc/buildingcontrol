@@ -7,6 +7,14 @@
 
 	<!-- 应用构建模块-->
     <package name="system" namespace="/" extends="default">
+    
+   		<!-- 验证码 -->
+    	<action name="createImageAction" class="createImageAction">
+			<result name="success" type="stream">
+			    <param name="contentType">image/jpeg</param>
+			    <param name="inputName">inputStream</param>
+			</result>
+    	</action>
 		<!-- 登陆 -->
 		<action name="login" method="login" class="loginAction">
 			<result name="success" type="stream">
@@ -28,6 +36,48 @@
 		<result name="VIEW_SUCCESS" type="dispatcher">/platform/userInfo.jsp</result>
 		<result name="EDIT_SUCCESS" type="dispatcher">/platform/userInfo.jsp</result>
 		<result name="ADD_SUCCESS" type="dispatcher">/platform/userInfo.jsp</result>
+		</action> 
+		
+		
+		
+		<!-- UserHasRole实体Bean -->
+		<action name="userHasRole_*" method="{1}" class="aliasUserHasRoleAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		<result name="LIST_SUCCESS" type="dispatcher">/platform/userHasRoleList.jsp</result>
+		<result name="VIEW_SUCCESS" type="dispatcher">/platform/userHasRoleInfo.jsp</result>
+		<result name="EDIT_SUCCESS" type="dispatcher">/platform/userHasRoleInfo.jsp</result>
+		<result name="ADD_SUCCESS" type="dispatcher">/platform/userHasRoleInfo.jsp</result>
+		</action> 
+		
+		
+		
+		<!-- Role实体Bean -->
+		<action name="role_*" method="{1}" class="aliasRoleAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		<result name="LIST_SUCCESS" type="dispatcher">/platform/roleList.jsp</result>
+		<result name="VIEW_SUCCESS" type="dispatcher">/platform/roleInfo.jsp</result>
+		<result name="EDIT_SUCCESS" type="dispatcher">/platform/roleInfo.jsp</result>
+		<result name="ADD_SUCCESS" type="dispatcher">/platform/roleInfo.jsp</result>
+		</action> 
+		
+		
+		
+		<!-- RoleHasBuilding实体Bean -->
+		<action name="roleHasBuilding_*" method="{1}" class="aliasRoleHasBuildingAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		<result name="LIST_SUCCESS" type="dispatcher">/platform/roleHasBuildingList.jsp</result>
+		<result name="VIEW_SUCCESS" type="dispatcher">/platform/roleHasBuildingInfo.jsp</result>
+		<result name="EDIT_SUCCESS" type="dispatcher">/platform/roleHasBuildingInfo.jsp</result>
+		<result name="ADD_SUCCESS" type="dispatcher">/platform/roleHasBuildingInfo.jsp</result>
 		</action> 
 		
 		
@@ -56,6 +106,7 @@
 		<result name="ADD_SUCCESS" type="dispatcher">/platform/deviceInfo.jsp</result>
 		</action> 
 		
+		
 		<!-- Schedule实体Bean -->
 		<action name="schedule_*" method="{1}" class="aliasScheduleAction">
 			<result name="success" type="stream">
@@ -66,6 +117,8 @@
 		<result name="VIEW_SUCCESS" type="dispatcher">/platform/scheduleInfo.jsp</result>
 		<result name="EDIT_SUCCESS" type="dispatcher">/platform/scheduleInfo.jsp</result>
 		<result name="ADD_SUCCESS" type="dispatcher">/platform/scheduleInfo.jsp</result>
-		</action>  
+		</action> 
+		
+				  
     </package>
 </struts>

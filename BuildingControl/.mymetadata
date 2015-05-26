@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="BuildingControl"
+  id="myeclipse.1431506520768"
+  context-root="/BuildingControl"
+  j2ee-spec="5.0"
+  archive="BuildingControl.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

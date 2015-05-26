@@ -13,13 +13,13 @@ import com.building.service.ifc.ScheduleServiceIFC;
 
 public class ScheduleServiceImpl implements ScheduleServiceIFC {
 	/**
-	  * @Description: DAO对象 
-	  */
+	 * @Description: DAO对象 
+	 */
 	private ScheduleDAO scheduleDao;
 	
 	/**
-	  * @Description: 获取实体列表 
-	  */
+	 * @Description: 获取实体列表 
+	 */
 	public List<Schedule> querySchedule4List(HttpServletRequest request, Schedule schedule) {
 		//构造Criteria
 		ScheduleExample example = new ScheduleExample();
@@ -30,8 +30,8 @@ public class ScheduleServiceImpl implements ScheduleServiceIFC {
 	
 	
 	/**
-	  * @Description: 查看实体对象 
-	  */
+	 * @Description: 查看实体对象 
+	 */
 	public Schedule querySchedule4Bean(Schedule schedule) {
 		Schedule _schedule = null;
 		//构造Criteria
@@ -45,26 +45,43 @@ public class ScheduleServiceImpl implements ScheduleServiceIFC {
 	return _schedule;
 	}
 	/**
-	  * @Description: 保存添加实体对象 
-	  */
+	 * @Description: 保存添加实体对象 
+	 */
 	public void saveAddSchedule(Schedule schedule) {
 		scheduleDao.insert(schedule);
 	}
 	
 	
 	/**
-	  * @Description: 保存编辑实体对象 
-	  */
+	 * @Description: 保存编辑实体对象 
+	 */
 	public void saveEditSchedule(Schedule schedule) {
 		scheduleDao.updateByPrimaryKey(schedule);
 	}
 	
 	
 	/**
-	  * @Description: 删除实体对象 
-	  */
+	 * @Description: 删除实体对象 
+	 */
 	public void delSchedule(Schedule schedule) {
 		scheduleDao.updateByPrimaryKeySelective(schedule);
+	}
+	
+	/**
+	 * @Description: 实体列表总数 
+	 */
+	public int countByExample(Schedule schedule) {
+	  ScheduleExample example = new ScheduleExample();
+	  Criteria criteria = example.createCriteria();
+	  criteria.andIsDelEqualTo( 1 );
+	  return scheduleDao.countByExample(example);
+	}
+	
+	/**
+	 * @Description: 根据ID获取对象 
+	 */
+	public Schedule queryScheduleById(Integer id) {
+	  return scheduleDao.selectByPrimaryKey(id);
 	}
 	
 	public ScheduleDAO getScheduleDao() {

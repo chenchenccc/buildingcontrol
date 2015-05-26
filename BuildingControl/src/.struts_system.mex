@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="system" location="1107,165" size="1050,1820">
+    <action name="login" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="LOGIN_SUCCESS">
+        <resourceEdge source="LOGIN_SUCCESS" routing="0" target="index.jsp" />
+      </result>
+      <result name="LOGIN_FAILE">
+        <resourceEdge source="LOGIN_FAILE" routing="0" target="login.jsp" />
+      </result>
+    </action>
+    <action name="user_*" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="LIST_SUCCESS">
+        <resourceEdge source="LIST_SUCCESS" routing="0" target="userList.jsp" />
+      </result>
+      <result name="VIEW_SUCCESS">
+        <resourceEdge source="VIEW_SUCCESS" routing="0" target="userInfo.jsp" />
+      </result>
+      <result name="EDIT_SUCCESS">
+        <resourceEdge source="EDIT_SUCCESS" routing="0" target="userInfo.jsp" />
+      </result>
+      <result name="ADD_SUCCESS">
+        <resourceEdge source="ADD_SUCCESS" routing="0" target="userInfo.jsp" />
+      </result>
+    </action>
+    <action name="userHasRole_*" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="LIST_SUCCESS">
+        <resourceEdge source="LIST_SUCCESS" routing="0" target="userHasRoleList.jsp" />
+      </result>
+      <result name="VIEW_SUCCESS">
+        <resourceEdge source="VIEW_SUCCESS" routing="0" target="userHasRoleInfo.jsp" />
+      </result>
+      <result name="EDIT_SUCCESS">
+        <resourceEdge source="EDIT_SUCCESS" routing="0" target="userHasRoleInfo.jsp" />
+      </result>
+      <result name="ADD_SUCCESS">
+        <resourceEdge source="ADD_SUCCESS" routing="0" target="userHasRoleInfo.jsp" />
+      </result>
+    </action>
+    <action name="role_*" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="LIST_SUCCESS">
+        <resourceEdge source="LIST_SUCCESS" routing="0" target="roleList.jsp" />
+      </result>
+      <result name="VIEW_SUCCESS">
+        <resourceEdge source="VIEW_SUCCESS" routing="0" target="roleInfo.jsp" />
+      </result>
+      <result name="EDIT_SUCCESS">
+        <resourceEdge source="EDIT_SUCCESS" routing="0" target="roleInfo.jsp" />
+      </result>
+      <result name="ADD_SUCCESS">
+        <resourceEdge source="ADD_SUCCESS" routing="0" target="roleInfo.jsp" />
+      </result>
+    </action>
+    <action name="roleHasBuilding_*" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="LIST_SUCCESS">
+        <resourceEdge source="LIST_SUCCESS" routing="0" target="roleHasBuildingList.jsp" />
+      </result>
+      <result name="VIEW_SUCCESS">
+        <resourceEdge source="VIEW_SUCCESS" routing="0" target="roleHasBuildingInfo.jsp" />
+      </result>
+      <result name="EDIT_SUCCESS">
+        <resourceEdge source="EDIT_SUCCESS" routing="0" target="roleHasBuildingInfo.jsp" />
+      </result>
+      <result name="ADD_SUCCESS">
+        <resourceEdge source="ADD_SUCCESS" routing="0" target="roleHasBuildingInfo.jsp" />
+      </result>
+    </action>
+    <action name="building_*" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="LIST_SUCCESS">
+        <resourceEdge source="LIST_SUCCESS" routing="0" target="buildingList.jsp" />
+      </result>
+      <result name="VIEW_SUCCESS">
+        <resourceEdge source="VIEW_SUCCESS" routing="0" target="buildingInfo.jsp" />
+      </result>
+      <result name="EDIT_SUCCESS">
+        <resourceEdge source="EDIT_SUCCESS" routing="0" target="buildingInfo.jsp" />
+      </result>
+      <result name="ADD_SUCCESS">
+        <resourceEdge source="ADD_SUCCESS" routing="0" target="buildingInfo.jsp" />
+      </result>
+    </action>
+    <action name="device_*" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="LIST_SUCCESS">
+        <resourceEdge source="LIST_SUCCESS" routing="0" target="deviceList.jsp" />
+      </result>
+      <result name="VIEW_SUCCESS">
+        <resourceEdge source="VIEW_SUCCESS" routing="0" target="deviceInfo.jsp" />
+      </result>
+      <result name="EDIT_SUCCESS">
+        <resourceEdge source="EDIT_SUCCESS" routing="0" target="deviceInfo.jsp" />
+      </result>
+      <result name="ADD_SUCCESS">
+        <resourceEdge source="ADD_SUCCESS" routing="0" target="deviceInfo.jsp" />
+      </result>
+    </action>
+    <action name="schedule_*" location="0,0" size="0,0">
+      <result name="success" />
+      <result name="LIST_SUCCESS">
+        <resourceEdge source="LIST_SUCCESS" routing="0" target="scheduleList.jsp" />
+      </result>
+      <result name="VIEW_SUCCESS">
+        <resourceEdge source="VIEW_SUCCESS" routing="0" target="scheduleInfo.jsp" />
+      </result>
+      <result name="EDIT_SUCCESS">
+        <resourceEdge source="EDIT_SUCCESS" routing="0" target="scheduleInfo.jsp" />
+      </result>
+      <result name="ADD_SUCCESS">
+        <resourceEdge source="ADD_SUCCESS" routing="0" target="scheduleInfo.jsp" />
+      </result>
+    </action>
+  </package>
+  <webResource name="systemDataDictionaryList.jsp" path="/platform/systemDataDictionaryList.jsp" location="1823,10" size="150,55" />
+  <webResource name="systemDataDictionaryInfo.jsp" path="/platform/systemDataDictionaryInfo.jsp" location="806,255" size="150,55" />
+  <webResource name="systemInformationList.jsp" path="/information/systemInformationList.jsp" location="1823,2040" size="150,55" />
+  <webResource name="systemInformationInfo.jsp" path="/platform/systemInformationInfo.jsp" location="9,535" size="150,55" />
+  <webResource name="systemInformationInfo.jsp" path="/information/systemInformationInfo.jsp" location="2206,535" size="150,55" />
+  <webResource name="systemRoleList.jsp" path="/platform/systemRoleList.jsp" location="1572,2040" size="150,55" />
+  <webResource name="systemRoleInfo.jsp" path="/platform/systemRoleInfo.jsp" location="310,675" size="150,55" />
+  <webResource name="systemUnitsList.jsp" path="/platform/systemUnitsList.jsp" location="871,1725" size="150,55" />
+  <webResource name="systemUnitsInfo.jsp" path="/platform/systemUnitsInfo.jsp" location="554,815" size="150,55" />
+  <webResource name="top.jsp" path="/top.jsp" location="952,1130" size="150,55" />
+  <webResource name="left.jsp" path="/left.jsp" location="952,1305" size="150,55" />
+  <webResource name="systemUsersList.jsp" path="/platform/systemUsersList.jsp" location="869,1480" size="150,55" />
+  <webResource name="systemUsersInfo.jsp" path="/platform/systemUsersInfo.jsp" location="692,990" size="150,55" />
+  <webResource name="smUserList.jsp" path="/platform/smUserList.jsp" location="0,0" size="0,0" />
+  <webResource name="smUserInfo.jsp" path="/platform/smUserInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="smAuthoList.jsp" path="/platform/smAuthoList.jsp" location="0,0" size="0,0" />
+  <webResource name="smAuthoInfo.jsp" path="/platform/smAuthoInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="smRoleList.jsp" path="/platform/smRoleList.jsp" location="0,0" size="0,0" />
+  <webResource name="smRoleInfo.jsp" path="/platform/smRoleInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="smUserRoleList.jsp" path="/platform/smUserRoleList.jsp" location="0,0" size="0,0" />
+  <webResource name="smUserRoleInfo.jsp" path="/platform/smUserRoleInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="smRoleAuthoList.jsp" path="/platform/smRoleAuthoList.jsp" location="0,0" size="0,0" />
+  <webResource name="smRoleAuthoInfo.jsp" path="/platform/smRoleAuthoInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmCustomerList.jsp" path="/platform/tmCustomerList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmCustomerInfo.jsp" path="/platform/tmCustomerInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmCustomerGroupList.jsp" path="/platform/tmCustomerGroupList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmCustomerGroupInfo.jsp" path="/platform/tmCustomerGroupInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmDepartmentList.jsp" path="/platform/tmDepartmentList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmDepartmentInfo.jsp" path="/platform/tmDepartmentInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmDetailList.jsp" path="/platform/tmDetailList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmDetailInfo.jsp" path="/platform/tmDetailInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmEmployeeList.jsp" path="/platform/tmEmployeeList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmEmployeeInfo.jsp" path="/platform/tmEmployeeInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmGroupList.jsp" path="/platform/tmGroupList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmGroupInfo.jsp" path="/platform/tmGroupInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmHotelList.jsp" path="/platform/tmHotelList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmHotelInfo.jsp" path="/platform/tmHotelInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmInfoList.jsp" path="/platform/tmInfoList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmInfoInfo.jsp" path="/platform/tmInfoInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmOrderList.jsp" path="/platform/tmOrderList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmOrderInfo.jsp" path="/platform/tmOrderInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="tmScheduleList.jsp" path="/platform/tmScheduleList.jsp" location="0,0" size="0,0" />
+  <webResource name="tmScheduleInfo.jsp" path="/platform/tmScheduleInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="index.jsp" path="/html/index.jsp" location="0,0" size="0,0" />
+  <webResource name="login.jsp" path="/login.jsp" location="0,0" size="0,0" />
+  <webResource name="userList.jsp" path="/platform/userList.jsp" location="0,0" size="0,0" />
+  <webResource name="userInfo.jsp" path="/platform/userInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="buildingList.jsp" path="/platform/buildingList.jsp" location="0,0" size="0,0" />
+  <webResource name="buildingInfo.jsp" path="/platform/buildingInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="deviceList.jsp" path="/platform/deviceList.jsp" location="0,0" size="0,0" />
+  <webResource name="deviceInfo.jsp" path="/platform/deviceInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="scheduleList.jsp" path="/platform/scheduleList.jsp" location="0,0" size="0,0" />
+  <webResource name="scheduleInfo.jsp" path="/platform/scheduleInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="userHasRoleList.jsp" path="/platform/userHasRoleList.jsp" location="0,0" size="0,0" />
+  <webResource name="userHasRoleInfo.jsp" path="/platform/userHasRoleInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="roleList.jsp" path="/platform/roleList.jsp" location="0,0" size="0,0" />
+  <webResource name="roleInfo.jsp" path="/platform/roleInfo.jsp" location="0,0" size="0,0" />
+  <webResource name="roleHasBuildingList.jsp" path="/platform/roleHasBuildingList.jsp" location="0,0" size="0,0" />
+  <webResource name="roleHasBuildingInfo.jsp" path="/platform/roleHasBuildingInfo.jsp" location="0,0" size="0,0" />
+</Struts2Diagram>
+

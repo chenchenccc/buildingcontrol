@@ -42,6 +42,16 @@ TD{LINE-HEIGHT: 15px;FONT-SIZE: 12px}
                 <TD>
                   <DIV align=left><INPUT style="WIDTH: 200px" id="password" 
                   size=25 type=password name="password"></DIV></TD></TR>
+                  <TR>
+                <TD height=25>
+                  <DIV align=right>验证码：</DIV></TD>
+                <TD>
+                  <DIV align=left><INPUT style="WIDTH: 130px" id="validcode" 
+                  size=25 type=text name="validcode">
+                  <img class="validcode-img" src="createImageAction.action" onclick="this.src='createImageAction.action?'+ Math.random()" title="点击图片刷新验证码"/>
+                  </DIV></TD></TR>
+				  <div id="loginMsg">${ login_msg }</div>          
+                
               <TR>
                 <TD height=37>
                   <DIV align=left></DIV></TD>

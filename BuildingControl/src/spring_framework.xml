@@ -57,11 +57,13 @@
 			</props>
 		</property>
 	</bean>
-	
+	<bean name="createImageAction" class="com.building.web.CreateImageAction" scope="prototype"></bean>
 	<bean name="loginAction" class="com.building.web.LoginAction" scope="prototype">
-		<property name="smUserServiceProxy" ref="smUserServiceProxy"></property>
+		<property name="userServiceProxy" ref="userServiceProxy"></property>
+		<property name="roleServiceProxy" ref="roleServiceProxy"></property>
 	</bean>
 	
+
 	<!-- User实体Bean -->
 	<bean id="userDao" class="com.building.dao.impl.UserDAOImpl" >
 		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
@@ -69,6 +71,8 @@
 	
 	<bean id="userService" class="com.building.service.impl.UserServiceImpl">
 		<property name="userDao" ref="userDao"></property>
+		<property name="userHasRoleDao" ref="userHasRoleDao"></property>
+		<property name="roleDao" ref="roleDao"></property>
 	</bean>
 	
 	<bean id="userServiceProxy" parent="baseTransactionProxy">
@@ -80,6 +84,59 @@
 	</bean>
 	
 	
+	
+	<!-- UserHasRole实体Bean -->
+	<bean id="userHasRoleDao" class="com.building.dao.impl.UserHasRoleDAOImpl" >
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
+	</bean>
+	
+	<bean id="userHasRoleService" class="com.building.service.impl.UserHasRoleServiceImpl">
+		<property name="userHasRoleDao" ref="userHasRoleDao"></property>
+	</bean>
+	
+	<bean id="userHasRoleServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="userHasRoleService"></property>
+	</bean>
+	
+	<bean name="aliasUserHasRoleAction" class="com.building.web.UserHasRoleAction" scope="prototype">
+		<property name="userHasRoleServiceProxy" ref="userHasRoleServiceProxy"></property>
+	</bean>
+	
+	
+	<!-- Role实体Bean -->
+	<bean id="roleDao" class="com.building.dao.impl.RoleDAOImpl" >
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
+	</bean>
+	
+	<bean id="roleService" class="com.building.service.impl.RoleServiceImpl">
+		<property name="roleDao" ref="roleDao"></property>
+	</bean>
+	
+	<bean id="roleServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="roleService"></property>
+	</bean>
+	
+	<bean name="aliasRoleAction" class="com.building.web.RoleAction" scope="prototype">
+		<property name="roleServiceProxy" ref="roleServiceProxy"></property>
+	</bean>
+	
+	
+	<!-- RoleHasBuilding实体Bean -->
+	<bean id="roleHasBuildingDao" class="com.building.dao.impl.RoleHasBuildingDAOImpl" >
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
+	</bean>
+	
+	<bean id="roleHasBuildingService" class="com.building.service.impl.RoleHasBuildingServiceImpl">
+		<property name="roleHasBuildingDao" ref="roleHasBuildingDao"></property>
+	</bean>
+	
+	<bean id="roleHasBuildingServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="roleHasBuildingService"></property>
+	</bean>
+	
+	<bean name="aliasRoleHasBuildingAction" class="com.building.web.RoleHasBuildingAction" scope="prototype">
+		<property name="roleHasBuildingServiceProxy" ref="roleHasBuildingServiceProxy"></property>
+	</bean>
 	
 	
 	<!-- Building实体Bean -->
@@ -98,6 +155,7 @@
 	<bean name="aliasBuildingAction" class="com.building.web.BuildingAction" scope="prototype">
 		<property name="buildingServiceProxy" ref="buildingServiceProxy"></property>
 	</bean>
+	
 	
 	
 	<!-- Device实体Bean -->
@@ -136,7 +194,7 @@
 		<property name="scheduleServiceProxy" ref="scheduleServiceProxy"></property>
 	</bean>
 	
-	
-		
+
+
 
 </beans>

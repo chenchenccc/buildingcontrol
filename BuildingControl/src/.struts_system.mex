@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Struts2Diagram version="2.0">
   <package name="system" location="1107,165" size="1050,1820">
+    <action name="createImageAction" location="0,0" size="0,0">
+      <result name="success" />
+    </action>
     <action name="login" location="0,0" size="0,0">
       <result name="success" />
       <result name="LOGIN_SUCCESS">

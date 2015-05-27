@@ -1,6 +1,7 @@
 package com.building.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -65,6 +66,7 @@ public class LoginAction extends BaseAction {
         request.setAttribute("login_msg", "登陆成功");
         System.out.println("登陆成功");
         user.setIsOnline( 1L );
+        user.setLastLogin( new Date() );
         userServiceProxy.saveEditUser( user );
         // TODO 验证成功, 获取权限等...
         // 设置密码为空

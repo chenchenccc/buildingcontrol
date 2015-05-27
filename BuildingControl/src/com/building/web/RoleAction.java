@@ -1,10 +1,18 @@
 package com.building.web;
 
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JsonConfig;
+
 import com.building.commons.base.BaseAction;
+import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
 import com.building.model.Role;
+import com.building.model.User;
 import com.building.service.ifc.RoleServiceIFC;
 
 @SuppressWarnings("serial")
@@ -18,7 +26,8 @@ public class RoleAction extends BaseAction{
 	  * @Description:  实体对象
 	  */
 	private Role role;
-	
+    private JSONArray jsonArr = null;
+    private JsonConfig jsonConfig = new JsonConfig();	
 	
 	/**
 	  * @Description: 获取实体列表 
@@ -26,7 +35,12 @@ public class RoleAction extends BaseAction{
 	public String listRole(){
 		List<Role> roleList = roleServiceProxy.queryRole4List(request,role);
 		request.setAttribute("roleList", roleList);
-		return LIST_SUCCESS;
+        jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+        
+        jsonArr= JSONArray.fromObject( roleList, jsonConfig );
+        
+        responseJson(roleServiceProxy.countByExample(role), jsonArr);
+        return SUCCESS;
 	}
 	
 	/**
@@ -54,6 +68,12 @@ public class RoleAction extends BaseAction{
 	  */
 	public String saveEditRole(){
 		try {
+		    HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute( "loginUser" );
+            if(loginUser != null) {
+                role.setUpdateUserId( loginUser.getId() );
+            }
+            role.setUpdateTime( new Date() );
 			roleServiceProxy.saveEditRole(role);
 			responseJson(true, "修改成功!");
 		} catch (Exception e) {
@@ -76,6 +96,12 @@ public class RoleAction extends BaseAction{
 	  */
 	public String saveAddRole(){
 		try {
+		    HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute( "loginUser" );
+            if(loginUser != null) {
+                role.setCreateUserId( loginUser.getId() );
+            }
+            role.setCreateTime( new Date() );
 			roleServiceProxy.saveAddRole(role);
 			responseJson(true, "添加成功!");
 		} catch (Exception e) {

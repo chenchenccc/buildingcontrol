@@ -8,42 +8,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>警员管理</title>
+	<title>角色管理</title>
 	<link rel="stylesheet" type="text/css" href="css/default.css">
 	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.3.5/themes/bootstrap/easyui.css" />
 	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.3.5/themes/icon.css" />
 </head>
 <body class="easyui-layout" >
 <div id="body" region="center" > 
-  <!-- 查询条件区域 -->
-  <div id="search_area" >
-    <div id="conditon">
-      <table border="0">
-        <tr>
-         <form id="ff" method="post">
-          <td>警员编号</td>
-          <td><input name="sysPolice.jybh" id="jybh" /></td>
-          <td>直属部门名称</td>
-          <td><input name="sysPolice.zsbmmc" id="zsbmmc" /></td>
-          <td>状态</td>
-          <td><input name="sysPolice.zt" id="zt" /></td>
-          <td>
-              <a href="javascript:void(0)" class="easyui-linkbutton my-search-button" onclick="query();" iconCls="icon-search" plain="true">查询</a>
-          </td>
-         </form>
-          </tr><tr>
-         <form id="fuzzy" method="post">
-          <td>模糊查询</td>
-          <td><input name="xm" id="xm" /></td>
-          <td>
-              <a href="javascript:void(0)" class="easyui-linkbutton my-search-button" onclick="fuzzyquery();" iconCls="icon-search" plain="true">模糊查询</a> 
-          </td>
-         </form>
-        </tr>
-      </table>
-    </div>
-    <span id="openOrClose">0</span> 
-  </div>
   <!-- 数据表格区域 -->
   <table id="tt" style="table-layout:fixed;"></table>
   <!-- Dialog -->
@@ -75,25 +46,11 @@ $(function(){
 		fitColumns:true,
 		rownumbers:true,
 		loadMsg : /*showProcess(true, '温馨提示', '正在加载数据, 请稍后...')*/'正在加载数据',
-		url: getPath() + "/system/sysPolice_listSysPolice.action",  
+		url: getPath() + "/role_listRole.action",  
 		columns:[[
-			{field:'jybh',title:'警员编号',width:60,halign:"center", align:"left"},
-			{field:'xm',title:'姓名',width:60,halign:"center", align:"left"},
-			{field:'xb',title:'性别',width:60,halign:"center", align:"left",formatter:function(value,rowData,rowIndex){
-				if(value == '0') return"<font>男</font>";
-				else if(value == '1') return"女";
-				else return "";
-			}},
-			{field:'zj',title:'座机',width:60,halign:"center", align:"left"},
-			{field:'sjhm1',title:'手机号码1',width:60,halign:"center", align:"left"},
-			{field:'zsbmmc',title:'直属部门名称',width:60,halign:"center", align:"left"},
-			{field:'zt',title:'用户状态',width:60,halign:"center", align:"left",formatter:function(value,rowData,rowIndex){
-				if(value == 'enable') return"<font color='black'>注册</font>";
-				else if(value == 'disable') return"<font color='pink'>禁用</font>";
-				else if(value == 'employ') return"<font color='green'>开通</font>";
-				else if(value == 'quit') return"<font color='grey'>退订</font>";
-				else if(value == 'arrearage') return"<font color='red'>欠费</font>";
-			}}
+			{field:'roleName',title:'角色名称',width:60,halign:"center", align:"left"},
+			{field:'description',title:'描述',width:60,halign:"center", align:"left"},
+			{field:'createTime',title:'创建时间',width:60,halign:"center", align:"left"}
 		]],
 		showPageList:[10,20,30,40,50],
 		pageNumber: 1, // 初始页数
@@ -112,7 +69,7 @@ $(function(){
 			        		var formData=$("#saveform").serialize();
 			        		$.ajax({
 								type: "POST",
-								url: getPath() + '/system/sysPolice_saveAddSysPolice.action',
+								url: getPath() + '/role_saveAddRole.action',
 								processData: true,
 								data: formData,
 								success: function(data){
@@ -138,7 +95,7 @@ $(function(){
 			    });
 				$("#content").html(''); // 先将content的内容清空
 				// 保存对象
-				$.post(getPath()+"/system/sysPolice_addSysPolice.action",
+				$.post(getPath()+"/role_addRole.action",
 				    function(result){
 						$("#content").append(result);
 				    });
@@ -158,7 +115,7 @@ $(function(){
 						// 保存编辑对象		        		
 		        		$.ajax({
 							type: "POST",
-							url: getPath() + '/system/sysPolice_saveEditSysPolice.action',
+							url: getPath() + '/role_saveEditRole.action',
 							processData:true,
 							data:formData,
 							success: function(data){
@@ -190,8 +147,8 @@ $(function(){
 			}
 			$("#content").html(''); // 先将content的内容清空
 			// 获取编辑对象
-			$.post(getPath()+"/system/sysPolice_editSysPolice.action",
-				{"sysPolice.id": row.id},
+			$.post(getPath()+"/role_editRole.action",
+				{"role.id": row.id},
 			    function(result){  
 					$("#content").append(result);
 			    });
@@ -207,10 +164,8 @@ $(function(){
 					function(r) {
 						if (r) {
 							// 删除对象
-							$.post(getPath() + '/system/sysPolice_delSysPolice.action',
-								{"sysPolice.id" :  row.id,
-								"sysPolice.zt" :  'delete'
-								},
+							$.post(getPath() + '/role_delRole.action',
+								{"role.id" :  row.id},
 								function(json) {
 									var result = eval(json);
 									if (result && result.success) {
@@ -225,62 +180,6 @@ $(function(){
 					showMsg('警告','请选择一条记录','alert');
 				}
 			}
-		},'-',{
-			text: '设备绑定',
-			iconCls: 'icon-save',
-			handler: function(){
-				$('#dd').dialog({
-			        buttons: [{
-			            text:'绑定',
-			            iconCls:'icon-ok',
-			            handler:function(){
-			        		 // 保存添加对象
-			        		var formData=$("#saveform").serialize();
-			        		$.ajax({
-								type: "POST",
-								url: getPath() + '/device/devEquip_saveAddDevEquip.action',
-								processData: true,
-								data: formData,
-								success: function(data){
-			        				result = eval("("+data+")");
-									if (result && result.success) {
-										$('#tt').datagrid('reload');
-										$.messager.show({title : '信息',msg : result.msg});
-									} else {
-										$.messager.show({title : '错误',msg : result.msg});
-									}
-			        			
-								}
-			        		});
-			                $("#dd").dialog('close');
-			            }
-			        },{
-			            text:'取消',
-			            iconCls:'icon-cancel',
-			            handler:function(){
-			                $("#dd").dialog('close');
-			            }
-			        }]
-			    });
-				var row = $('#tt').datagrid('getSelected');
-				if(row == null) {
-					showMsg('警告','请选择一条记录','alert');
-					return;
-				}
-				$("#content").html(''); // 先将content的内容清空
-				// 保存对象
-				$.post(getPath()+"/device/devEquip_bindDevEquip.action",
-					{'devEquip.jyid': row.id},
-				    function(result){
-						$("#content").append(result);
-				    });
-				$("#dd").dialog('open').dialog('setTitle', '绑定');
-			    $('#form').form('clear');
-			}
-		},'-',{
-			text: '帮助',
-			iconCls: 'icon-help',
-			handler: function(){showMsg('帮助','这里是帮助内容','alert');}
 		}],
 		onDblClickRow:function(rowIndex, rowData){
 			viewDetail(rowData.id);
@@ -319,8 +218,8 @@ function viewDetail(data){
 	var row = $('#tt').datagrid('getSelected');
 	$("#content").html(''); // 先将content的内容清空
 	// 查看对象
-	$.post(getPath()+"/system/sysPolice_viewSysPolice.action",
-		{"sysPolice.id" : row.id },
+	$.post(getPath()+"/role_viewRole.action",
+		{"role.id" : row.id },
 	    function(result){ 
 			$("#content").append(result);
 	    });

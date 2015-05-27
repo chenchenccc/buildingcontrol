@@ -1,8 +1,13 @@
 package com.building.web;
 
+import java.util.Date;
 import java.util.List;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JsonConfig;
+
 import com.building.commons.base.BaseAction;
+import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
 import com.building.model.RoleHasBuilding;
 import com.building.service.ifc.RoleHasBuildingServiceIFC;
@@ -18,7 +23,8 @@ public class RoleHasBuildingAction extends BaseAction{
 	  * @Description:  实体对象
 	  */
 	private RoleHasBuilding roleHasBuilding;
-	
+    private JSONArray jsonArr = null;
+    private JsonConfig jsonConfig = new JsonConfig();	
 	
 	/**
 	  * @Description: 获取实体列表 
@@ -26,7 +32,12 @@ public class RoleHasBuildingAction extends BaseAction{
 	public String listRoleHasBuilding(){
 		List<RoleHasBuilding> roleHasBuildingList = roleHasBuildingServiceProxy.queryRoleHasBuilding4List(request,roleHasBuilding);
 		request.setAttribute("roleHasBuildingList", roleHasBuildingList);
-		return LIST_SUCCESS;
+		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+        
+        jsonArr= JSONArray.fromObject( roleHasBuildingList, jsonConfig );
+        
+        responseJson(roleHasBuildingServiceProxy.countByExample(roleHasBuilding), jsonArr);
+        return SUCCESS;
 	}
 	
 	/**

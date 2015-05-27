@@ -1,10 +1,18 @@
 package com.building.web;
 
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JsonConfig;
+
 import com.building.commons.base.BaseAction;
+import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
 import com.building.model.Building;
+import com.building.model.User;
 import com.building.service.ifc.BuildingServiceIFC;
 
 @SuppressWarnings("serial")
@@ -18,6 +26,8 @@ public class BuildingAction extends BaseAction{
 	  * @Description:  实体对象
 	  */
 	private Building building;
+    private JSONArray jsonArr = null;
+    private JsonConfig jsonConfig = new JsonConfig();
 	
 	
 	/**
@@ -26,7 +36,12 @@ public class BuildingAction extends BaseAction{
 	public String listBuilding(){
 		List<Building> buildingList = buildingServiceProxy.queryBuilding4List(request,building);
 		request.setAttribute("buildingList", buildingList);
-		return LIST_SUCCESS;
+        jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+        
+        jsonArr= JSONArray.fromObject( buildingList, jsonConfig );
+        
+        responseJson(buildingServiceProxy.countByExample(building), jsonArr);
+        return SUCCESS;
 	}
 	
 	/**
@@ -54,6 +69,12 @@ public class BuildingAction extends BaseAction{
 	  */
 	public String saveEditBuilding(){
 		try {
+		    HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute( "loginUser" );
+            if(loginUser != null) {
+                building.setUpdateUserId( loginUser.getId() );
+            }
+            building.setUpdateTime( new Date() );
 			buildingServiceProxy.saveEditBuilding(building);
 			responseJson(true, "修改成功!");
 		} catch (Exception e) {
@@ -76,6 +97,12 @@ public class BuildingAction extends BaseAction{
 	  */
 	public String saveAddBuilding(){
 		try {
+		    HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute( "loginUser" );
+            if(loginUser != null) {
+                building.setCreateUserId( loginUser.getId() );
+            }
+            building.setCreateTime( new Date() );
 			buildingServiceProxy.saveAddBuilding(building);
 			responseJson(true, "添加成功!");
 		} catch (Exception e) {

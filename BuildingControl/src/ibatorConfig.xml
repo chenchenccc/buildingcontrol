@@ -15,13 +15,13 @@
 		<daoGenerator targetPackage="com.building.dao"
 			targetProject="BuildingControl/src" type="SPRING" />
 		<table tableName="user"></table>
-		<table tableName="user_has_role"></table>
+		<!--<table tableName="user_has_role"></table>
 		<table tableName="role"></table>
 		<table tableName="role_has_building"></table>
 		<table tableName="building"></table>
 		<table tableName="device"></table>
 		<table tableName="schedule"></table>
 		
-	</ibatorContext>
+	--></ibatorContext>
 
 </ibatorConfiguration>

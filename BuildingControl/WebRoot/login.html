@@ -1,10 +1,10 @@
-<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+
+<meta charset="utf-8">
 <title>html5响应式后台登录界面模板</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
@@ -31,14 +31,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="main_box">
 		<div class="login_box">
 			<div class="login_logo">
-				<h1>智能楼宇系统</h1>
+				<img src="images/logo.png" >
 			</div>
 		
 			<div class="login_form">
-				<form action="login.action" id="login_form" method="post">
+				<form action="index.html" id="login_form" method="post">
 					<div class="form-group">
-						<label for="j_username" class="t">用户名：</label> 
-						<input id="username" value="" name="username" type="text" class="form-control x319 in" 
+						<label for="j_username" class="t">邮　箱：</label> 
+						<input id="email" value="" name="email" type="text" class="form-control x319 in" 
 						autocomplete="off">
 					</div>
 					<div class="form-group">
@@ -48,19 +48,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 					<div class="form-group">
 						<label for="j_captcha" class="t">验证码：</label>
-						 <input id="validcode" name="validcode" type="text" class="form-control x164 in">
-						<img class="validcode-img" src="createImageAction.action" onclick="this.src='createImageAction.action?'+ Math.random()" title="点击图片刷新验证码"/></div>
+						 <input id="j_captcha" name="j_captcha" type="text" class="form-control x164 in">
+						<img id="captcha_img" alt="点击更换" title="点击更换" src="images/captcha.jpeg" class="m">
+					</div>
+					<div class="form-group">
+						<label class="t"></label>
+						<label for="j_remember" class="m">
+						<input id="j_remember" type="checkbox" value="true">&nbsp;记住登陆账号!</label>
 					</div>
 					<div class="form-group space">
 						<label class="t"></label>　　　
 						<button type="button"  id="submit_btn" 
 						class="btn btn-primary btn-lg">&nbsp;登&nbsp;录&nbsp </button>
 						<input type="reset" value="&nbsp;重&nbsp;置&nbsp;" class="btn btn-default btn-lg">
-						<lable for="j_captcha" class="t" >${ login_msg }</lable>
 					</div>
 				</form>
 			</div>
 		</div>
+		<div class="bottom">Copyright &copy; 2014 - 2015 <a href="#">系统登陆</a></div>
 	</div>
 </div>
 
@@ -70,6 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="js/supersized-init.js"></script>
 <script src="js/scripts.js"></script>
 <div style="text-align:center;">
+<p>来源:<a href="http://www.mycodes.net/" target="_blank">源码之家</a></p>
 </div>
 </body>
 </html>

@@ -1,10 +1,20 @@
 package com.building.web;
 
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import oracle.net.aso.s;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JsonConfig;
+
 import com.building.commons.base.BaseAction;
+import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
 import com.building.model.Schedule;
+import com.building.model.User;
 import com.building.service.ifc.ScheduleServiceIFC;
 
 @SuppressWarnings("serial")
@@ -18,7 +28,8 @@ public class ScheduleAction extends BaseAction{
 	  * @Description:  实体对象
 	  */
 	private Schedule schedule;
-	
+    private JSONArray jsonArr = null;
+    private JsonConfig jsonConfig = new JsonConfig();	
 	
 	/**
 	  * @Description: 获取实体列表 
@@ -26,7 +37,12 @@ public class ScheduleAction extends BaseAction{
 	public String listSchedule(){
 		List<Schedule> scheduleList = scheduleServiceProxy.querySchedule4List(request,schedule);
 		request.setAttribute("scheduleList", scheduleList);
-		return LIST_SUCCESS;
+		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+        
+        jsonArr= JSONArray.fromObject( scheduleList, jsonConfig );
+        
+        responseJson(scheduleServiceProxy.countByExample(schedule), jsonArr);
+        return SUCCESS;
 	}
 	
 	/**
@@ -54,6 +70,12 @@ public class ScheduleAction extends BaseAction{
 	  */
 	public String saveEditSchedule(){
 		try {
+		    HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute( "loginUser" );
+            if(loginUser != null) {
+                schedule.setUpdateUserId( loginUser.getId() );
+            }
+            schedule.setUpdateTime( new Date() );
 			scheduleServiceProxy.saveEditSchedule(schedule);
 			responseJson(true, "修改成功!");
 		} catch (Exception e) {
@@ -76,6 +98,12 @@ public class ScheduleAction extends BaseAction{
 	  */
 	public String saveAddSchedule(){
 		try {
+		    HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute( "loginUser" );
+            if(loginUser != null) {
+                schedule.setCreateUserId( loginUser.getId() );
+            }
+            schedule.setCreateTime( new Date() );
 			scheduleServiceProxy.saveAddSchedule(schedule);
 			responseJson(true, "添加成功!");
 		} catch (Exception e) {

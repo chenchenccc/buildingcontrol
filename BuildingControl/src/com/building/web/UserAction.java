@@ -1,8 +1,15 @@
 package com.building.web;
 
+import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JsonConfig;
+
 import com.building.commons.base.BaseAction;
+import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
 import com.building.model.User;
 import com.building.service.ifc.UserServiceIFC;
@@ -18,6 +25,8 @@ public class UserAction extends BaseAction{
 	  * @Description:  实体对象
 	  */
 	private User user;
+	private JSONArray jsonArr = null;
+    private JsonConfig jsonConfig = new JsonConfig();
 	
 	
 	/**
@@ -26,7 +35,12 @@ public class UserAction extends BaseAction{
 	public String listUser(){
 		List<User> userList = userServiceProxy.queryUser4List(request,user);
 		request.setAttribute("userList", userList);
-		return LIST_SUCCESS;
+		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+        
+        jsonArr= JSONArray.fromObject( userList, jsonConfig );
+        
+        responseJson(userServiceProxy.countByExample(user), jsonArr);
+		return SUCCESS;
 	}
 	
 	/**
@@ -54,6 +68,12 @@ public class UserAction extends BaseAction{
 	  */
 	public String saveEditUser(){
 		try {
+		    HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute( "loginUser" );
+            if(loginUser != null) {
+                user.setUpdateUserId( loginUser.getId() );
+            }
+            user.setUpdateTime( new Date() );
 			userServiceProxy.saveEditUser(user);
 			responseJson(true, "修改成功!");
 		} catch (Exception e) {
@@ -76,6 +96,14 @@ public class UserAction extends BaseAction{
 	  */
 	public String saveAddUser(){
 		try {
+		    HttpSession session = request.getSession();
+		    User loginUser = (User) session.getAttribute( "loginUser" );
+		    if(loginUser != null) {
+		        user.setCreateUserId( loginUser.getId() );
+		    }
+		    user.setCreateTime( new Date() );
+		    // 设置用户状态为离线
+		    user.setIsOnline( 2L );
 			userServiceProxy.saveAddUser(user);
 			responseJson(true, "添加成功!");
 		} catch (Exception e) {

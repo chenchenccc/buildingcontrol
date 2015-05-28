@@ -24,7 +24,15 @@ public class BuildingServiceImpl implements BuildingServiceIFC {
 		//构造Criteria
 		BuildingExample example = new BuildingExample();
 		Criteria criteria = example.createCriteria();
-	
+		
+		if(null != request.getParameter("rows") && null != request.getParameter("page")) {
+            int limit = Integer.parseInt(request.getParameter("rows"));
+            int start = (Integer.parseInt(request.getParameter("page")) - 1) * limit;
+            example.setLimitStart(start);
+            example.setLimitEnd(limit);
+        }
+		
+		criteria.andIsDelEqualTo( 1 );
 		return buildingDao.selectByExample(example);
 	}
 	
@@ -48,6 +56,7 @@ public class BuildingServiceImpl implements BuildingServiceIFC {
 	 * @Description: 保存添加实体对象 
 	 */
 	public void saveAddBuilding(Building building) {
+	    building.setIsDel( 1 );
 		buildingDao.insert(building);
 	}
 	

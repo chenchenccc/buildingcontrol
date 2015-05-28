@@ -101,6 +101,7 @@ public class RoleHasBuildingAction extends BaseAction{
 	  */
 	public String delRoleHasBuilding(){
 		try {
+		    roleHasBuilding.setIsDel( 1 );
 			roleHasBuildingServiceProxy.delRoleHasBuilding(roleHasBuilding);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {

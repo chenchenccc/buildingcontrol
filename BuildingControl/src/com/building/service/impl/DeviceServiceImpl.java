@@ -24,7 +24,18 @@ public class DeviceServiceImpl implements DeviceServiceIFC {
 		//构造Criteria
 		DeviceExample example = new DeviceExample();
 		Criteria criteria = example.createCriteria();
-	
+		if(device != null && device.getBuildingId() != null) {
+		    criteria.andBuildingIdEqualTo( device.getBuildingId() );
+		}
+
+        if(null != request.getParameter("rows") && null != request.getParameter("page")) {
+            int limit = Integer.parseInt(request.getParameter("rows"));
+            int start = (Integer.parseInt(request.getParameter("page")) - 1) * limit;
+            example.setLimitStart(start);
+            example.setLimitEnd(limit);
+        }
+        
+        criteria.andIsDelEqualTo( 1 );
 		return deviceDao.selectByExample(example);
 	}
 	
@@ -48,6 +59,7 @@ public class DeviceServiceImpl implements DeviceServiceIFC {
 	 * @Description: 保存添加实体对象 
 	 */
 	public void saveAddDevice(Device device) {
+	    device.setIsDel( 1 );
 		deviceDao.insert(device);
 	}
 	

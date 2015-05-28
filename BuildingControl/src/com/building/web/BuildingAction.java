@@ -1,5 +1,6 @@
 package com.building.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,9 +12,14 @@ import net.sf.json.JsonConfig;
 import com.building.commons.base.BaseAction;
 import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
+import com.building.commons.utils.ZTreeBean;
 import com.building.model.Building;
+import com.building.model.RoleHasBuilding;
 import com.building.model.User;
+import com.building.model.UserHasRole;
 import com.building.service.ifc.BuildingServiceIFC;
+import com.building.service.ifc.RoleHasBuildingServiceIFC;
+import com.building.service.ifc.UserHasRoleServiceIFC;
 
 @SuppressWarnings("serial")
 public class BuildingAction extends BaseAction{
@@ -21,6 +27,8 @@ public class BuildingAction extends BaseAction{
 	  * @Description: 业务代理对象 
 	  */
 	private BuildingServiceIFC buildingServiceProxy;
+	private UserHasRoleServiceIFC userHasRoleServiceProxy;
+	private RoleHasBuildingServiceIFC roleHasBuildingServiceProxy;
 	
 	/**
 	  * @Description:  实体对象
@@ -35,6 +43,14 @@ public class BuildingAction extends BaseAction{
 	  */
 	public String listBuilding(){
 		List<Building> buildingList = buildingServiceProxy.queryBuilding4List(request,building);
+		List<Building> retBuildingList = new ArrayList<Building>();
+		for (Building building : buildingList) {
+            if(building.getSuperId() != 0) {
+                Building superBuilding = buildingServiceProxy.queryBuildingById( building.getSuperId() );
+                building.setBuildingName( superBuilding.getBuildingName() + ">" + building.getBuildingName());
+            }
+            retBuildingList.add( building );
+        }
 		request.setAttribute("buildingList", buildingList);
         jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
         
@@ -117,6 +133,7 @@ public class BuildingAction extends BaseAction{
 	  */
 	public String delBuilding(){
 		try {
+		    building.setIsDel( 1 );
 			buildingServiceProxy.delBuilding(building);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {
@@ -124,6 +141,65 @@ public class BuildingAction extends BaseAction{
 			RJLog.error(e);
 		}
 		return SUCCESS;
+	}
+	
+	public String buildingTree() {
+	    try {
+    	    // 获取登录用户
+    	    HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute( "loginUser" );
+            if(loginUser == null) {
+                responseJson( false,"用户未登录" );
+                return SUCCESS;
+            }
+            
+            // 获取用户角色
+            Integer userId = loginUser.getId();
+            UserHasRole userHasRole = new UserHasRole();
+            userHasRole.setUserId( userId );
+            List<UserHasRole> userRoleList = userHasRoleServiceProxy.queryUserHasRole4List( request, userHasRole  );
+            if(userRoleList == null || userRoleList.size() == 0) {
+                // 用户没有角色
+                responseJson( false,"用户无角色" );
+                return SUCCESS;
+            }
+            List<Integer> buildingIds = new ArrayList<Integer>();
+            for (UserHasRole ur : userRoleList) {
+                Integer roleId = ur.getRoleId();
+                
+                RoleHasBuilding roleHasBuilding = new RoleHasBuilding();
+                roleHasBuilding.setRoleId( roleId );
+                //获取角色对象, 楼宇ID列表
+                List<RoleHasBuilding> roleBuildingList = roleHasBuildingServiceProxy.queryRoleHasBuilding4List( request, roleHasBuilding  );
+                for (RoleHasBuilding rb : roleBuildingList) {
+                    buildingIds.add( rb.getBuildingId() );
+                }
+            }
+            ZTreeBean buildingTree = null;
+            List<ZTreeBean> ztreeList = new ArrayList<ZTreeBean>();
+            Building b = null;
+            // 获取楼宇对象
+            for (Integer buildingId : buildingIds) {
+                b = buildingServiceProxy.queryBuildingById( buildingId );
+                buildingTree = new ZTreeBean();
+                buildingTree.setId(b.getId());
+                buildingTree.setName(b.getBuildingName());
+                buildingTree.setOpen(Boolean.TRUE);
+                buildingTree.setpId(b.getSuperId());
+                ztreeList.add(buildingTree);
+            }
+           
+            if(ztreeList == null || ztreeList.size() == 0) {
+                responseJson( false,"用户无权限" );
+                return SUCCESS;
+            }
+            jsonArr = JSONArray.fromObject(ztreeList);
+            responseJson( true, jsonArr );
+        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return SUCCESS;
 	}
 	
 	public BuildingServiceIFC getBuildingServiceProxy() {
@@ -138,4 +214,26 @@ public class BuildingAction extends BaseAction{
 	public void setBuilding(Building building) {
 		this.building = building;
 	}
+
+    
+    public UserHasRoleServiceIFC getUserHasRoleServiceProxy() {
+        return userHasRoleServiceProxy;
+    }
+
+    
+    public void setUserHasRoleServiceProxy( UserHasRoleServiceIFC userHasRoleServiceProxy ) {
+        this.userHasRoleServiceProxy = userHasRoleServiceProxy;
+    }
+
+    
+    public RoleHasBuildingServiceIFC getRoleHasBuildingServiceProxy() {
+        return roleHasBuildingServiceProxy;
+    }
+
+    
+    public void setRoleHasBuildingServiceProxy( RoleHasBuildingServiceIFC roleHasBuildingServiceProxy ) {
+        this.roleHasBuildingServiceProxy = roleHasBuildingServiceProxy;
+    }
+	
+	
 }

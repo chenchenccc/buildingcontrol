@@ -24,7 +24,16 @@ public class RoleHasBuildingServiceImpl implements RoleHasBuildingServiceIFC {
 		//构造Criteria
 		RoleHasBuildingExample example = new RoleHasBuildingExample();
 		Criteria criteria = example.createCriteria();
-	
+
+        
+        if(null != request.getParameter("rows") && null != request.getParameter("page")) {
+            int limit = Integer.parseInt(request.getParameter("rows"));
+            int start = (Integer.parseInt(request.getParameter("page")) - 1) * limit;
+            example.setLimitStart(start);
+            example.setLimitEnd(limit);
+        }
+        
+        criteria.andIsDelEqualTo( 1 );
 		return roleHasBuildingDao.selectByExample(example);
 	}
 	
@@ -48,6 +57,7 @@ public class RoleHasBuildingServiceImpl implements RoleHasBuildingServiceIFC {
 	 * @Description: 保存添加实体对象 
 	 */
 	public void saveAddRoleHasBuilding(RoleHasBuilding roleHasBuilding) {
+	    roleHasBuilding.setIsDel( 1 );
 		roleHasBuildingDao.insert(roleHasBuilding);
 	}
 	

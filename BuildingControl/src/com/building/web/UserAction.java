@@ -118,6 +118,7 @@ public class UserAction extends BaseAction{
 	  */
 	public String delUser(){
 		try {
+		    user.setIsDel( 1 );
 			userServiceProxy.delUser(user);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {

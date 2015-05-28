@@ -116,6 +116,7 @@ public class RoleAction extends BaseAction{
 	  */
 	public String delRole(){
 		try {
+		    role.setIsDel( 1 );
 			roleServiceProxy.delRole(role);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {

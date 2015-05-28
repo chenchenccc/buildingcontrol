@@ -48,9 +48,9 @@ $(function(){
 		loadMsg : /*showProcess(true, '温馨提示', '正在加载数据, 请稍后...')*/'正在加载数据',
 		url: getPath() + "/building_listBuilding.action",  
 		columns:[[
-			{field:'buidlingName',title:'楼层号',width:60,halign:"center", align:"center"},
+			{field:'buildingName',title:'楼层号',width:60,halign:"center", align:"center"},
 			{field:'buildingType',title:'楼层类型',width:60,halign:"center", align:"center",formatter:function(value,rowData,rowIndex){
-				if(value == '1') return"大楼";
+				if(value == '0') return"大楼";
 				else if(value == '1') return"楼层";
 			}},
 			{field:'createTime',title:'创建时间',width:60,halign:"center", align:"center"},

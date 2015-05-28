@@ -1,5 +1,6 @@
 package com.building.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,8 +12,10 @@ import net.sf.json.JsonConfig;
 import com.building.commons.base.BaseAction;
 import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
+import com.building.model.Building;
 import com.building.model.Device;
 import com.building.model.User;
+import com.building.service.ifc.BuildingServiceIFC;
 import com.building.service.ifc.DeviceServiceIFC;
 
 @SuppressWarnings("serial")
@@ -21,6 +24,7 @@ public class DeviceAction extends BaseAction{
 	  * @Description: 业务代理对象 
 	  */
 	private DeviceServiceIFC deviceServiceProxy;
+	private BuildingServiceIFC buildingServiceProxy;
 	
 	/**
 	  * @Description:  实体对象
@@ -34,10 +38,23 @@ public class DeviceAction extends BaseAction{
 	  */
 	public String listDevice(){
 		List<Device> deviceList = deviceServiceProxy.queryDevice4List(request,device);
-		request.setAttribute("deviceList", deviceList);
+		List<Device> retDeviceList = new ArrayList<Device>();
+		// 添加所属楼层字段
+		for (Device d : deviceList) {
+            Long bid = d.getBuildingId();
+            Building building = buildingServiceProxy.queryBuildingById( bid.intValue() );
+            if(building != null && building.getSuperId() != 0 ) {
+                
+                Building superBuilding = buildingServiceProxy.queryBuildingById( building.getSuperId() );
+                building.setBuildingName( superBuilding.getBuildingName() + ">" + building.getBuildingName() ); 
+            }
+            d.setBuildingName( building.getBuildingName() );
+            retDeviceList.add( d );
+        }
+		request.setAttribute("deviceList", retDeviceList);
         jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
         
-        jsonArr= JSONArray.fromObject( deviceList, jsonConfig );
+        jsonArr= JSONArray.fromObject( retDeviceList, jsonConfig );
         
         responseJson(deviceServiceProxy.countByExample(device), jsonArr);
         return SUCCESS;
@@ -116,6 +133,11 @@ public class DeviceAction extends BaseAction{
 	  */
 	public String delDevice(){
 		try {
+		    if(device == null || device.getId() == null) {
+                responseJson( false, "参数错误！" );
+                return SUCCESS;
+            }
+		    device.setIsDel( 1 );
 			deviceServiceProxy.delDevice(device);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {
@@ -123,6 +145,29 @@ public class DeviceAction extends BaseAction{
 			RJLog.error(e);
 		}
 		return SUCCESS;
+	}
+	
+	public String changeState() {
+	    try {
+	        if(device == null || device.getId() == null) {
+	            responseJson( false, "参数错误！" );
+	            return SUCCESS;
+	        }
+	        device = deviceServiceProxy.queryDeviceById( device.getId() );
+	        if(device == null) {
+	            responseJson( false, "数据错误！" );
+                return SUCCESS;
+	        }
+	        // state = 0 -> 转换为1， state = 1 -> 转换为0
+	        int state = ( device.getState() + 1 ) % 2;
+            device.setState( state );
+            deviceServiceProxy.delDevice(device);
+            responseJson(true, "更改状态成功!");
+        } catch (Exception e) {
+            responseJson(false, "更改状态失败!");
+            RJLog.error(e);
+        }
+        return SUCCESS;
 	}
 	
 	public DeviceServiceIFC getDeviceServiceProxy() {
@@ -137,4 +182,16 @@ public class DeviceAction extends BaseAction{
 	public void setDevice(Device device) {
 		this.device = device;
 	}
+
+    
+    public BuildingServiceIFC getBuildingServiceProxy() {
+        return buildingServiceProxy;
+    }
+
+    
+    public void setBuildingServiceProxy( BuildingServiceIFC buildingServiceProxy ) {
+        this.buildingServiceProxy = buildingServiceProxy;
+    }
+	
+	
 }

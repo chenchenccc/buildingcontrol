@@ -153,6 +153,8 @@
 	</bean>
 	
 	<bean name="aliasBuildingAction" class="com.building.web.BuildingAction" scope="prototype">
+		<property name="userHasRoleServiceProxy" ref="userHasRoleServiceProxy"></property>
+		<property name="roleHasBuildingServiceProxy" ref="roleHasBuildingServiceProxy"></property>
 		<property name="buildingServiceProxy" ref="buildingServiceProxy"></property>
 	</bean>
 	
@@ -172,6 +174,7 @@
 	</bean>
 	
 	<bean name="aliasDeviceAction" class="com.building.web.DeviceAction" scope="prototype">
+		<property name="buildingServiceProxy" ref="buildingServiceProxy"></property>
 		<property name="deviceServiceProxy" ref="deviceServiceProxy"></property>
 	</bean>
 	
@@ -191,6 +194,8 @@
 	</bean>
 	
 	<bean name="aliasScheduleAction" class="com.building.web.ScheduleAction" scope="prototype">
+		<property name="deviceServiceProxy" ref="deviceServiceProxy"></property>
+		<property name="buildingServiceProxy" ref="buildingServiceProxy"></property>
 		<property name="scheduleServiceProxy" ref="scheduleServiceProxy"></property>
 	</bean>
 	

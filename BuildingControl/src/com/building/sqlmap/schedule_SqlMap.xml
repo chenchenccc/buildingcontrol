@@ -60,6 +60,9 @@
       <isNotNull property="orderByClause">
         order by $orderByClause$
       </isNotNull>
+      <isNotNull property="limitEnd">
+       limit $limitStart$, $limitEnd$
+      </isNotNull>
     </isParameterPresent>
   </select>
   <select id="ibatorgenerated_selectByPrimaryKey" parameterClass="com.building.model.Schedule" resultMap="ibatorgenerated_BaseResultMap">

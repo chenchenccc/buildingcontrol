@@ -24,7 +24,18 @@ public class ScheduleServiceImpl implements ScheduleServiceIFC {
 		//构造Criteria
 		ScheduleExample example = new ScheduleExample();
 		Criteria criteria = example.createCriteria();
-	
+		if(schedule != null && schedule.getIsDone() != null) {
+		    criteria.andIsDoneEqualTo( schedule.getIsDone() );
+		}
+        
+        if(null != request.getParameter("rows") && null != request.getParameter("page")) {
+            int limit = Integer.parseInt(request.getParameter("rows"));
+            int start = (Integer.parseInt(request.getParameter("page")) - 1) * limit;
+            example.setLimitStart(start);
+            example.setLimitEnd(limit);
+        }
+        
+        criteria.andIsDelEqualTo( 1 );
 		return scheduleDao.selectByExample(example);
 	}
 	
@@ -48,6 +59,7 @@ public class ScheduleServiceImpl implements ScheduleServiceIFC {
 	 * @Description: 保存添加实体对象 
 	 */
 	public void saveAddSchedule(Schedule schedule) {
+	    schedule.setIsDel( 1 );
 		scheduleDao.insert(schedule);
 	}
 	

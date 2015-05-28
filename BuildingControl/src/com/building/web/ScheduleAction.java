@@ -1,11 +1,10 @@
 package com.building.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-
-import oracle.net.aso.s;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
@@ -13,8 +12,12 @@ import net.sf.json.JsonConfig;
 import com.building.commons.base.BaseAction;
 import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
+import com.building.model.Building;
+import com.building.model.Device;
 import com.building.model.Schedule;
 import com.building.model.User;
+import com.building.service.ifc.BuildingServiceIFC;
+import com.building.service.ifc.DeviceServiceIFC;
 import com.building.service.ifc.ScheduleServiceIFC;
 
 @SuppressWarnings("serial")
@@ -23,6 +26,8 @@ public class ScheduleAction extends BaseAction{
 	  * @Description: 业务代理对象 
 	  */
 	private ScheduleServiceIFC scheduleServiceProxy;
+	private DeviceServiceIFC deviceServiceProxy;
+	private BuildingServiceIFC buildingServiceProxy;
 	
 	/**
 	  * @Description:  实体对象
@@ -36,10 +41,23 @@ public class ScheduleAction extends BaseAction{
 	  */
 	public String listSchedule(){
 		List<Schedule> scheduleList = scheduleServiceProxy.querySchedule4List(request,schedule);
-		request.setAttribute("scheduleList", scheduleList);
+		List<Schedule> retScheduleList = new ArrayList<Schedule>();
+		// 获取关联deviceName
+		for (Schedule s : scheduleList) {
+		    Device d = deviceServiceProxy.queryDeviceById( s.getDeviceId() );
+		    Building b = buildingServiceProxy.queryBuildingById( d.getBuildingId().intValue() );
+		    if(b != null && b.getSuperId() != 0) {
+		        Building superb = buildingServiceProxy.queryBuildingById( b.getSuperId() );
+		        b.setBuildingName( superb.getBuildingName() + ">" + b.getBuildingName() );
+		    }
+		    s.setBuildingName( b.getBuildingName() );
+		    s.setDeviceName( d.getDeviceName() );
+		    retScheduleList.add( s );
+        }
+		request.setAttribute("scheduleList", retScheduleList);
 		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
         
-        jsonArr= JSONArray.fromObject( scheduleList, jsonConfig );
+        jsonArr= JSONArray.fromObject( retScheduleList, jsonConfig );
         
         responseJson(scheduleServiceProxy.countByExample(schedule), jsonArr);
         return SUCCESS;
@@ -118,6 +136,7 @@ public class ScheduleAction extends BaseAction{
 	  */
 	public String delSchedule(){
 		try {
+		    schedule.setIsDel( 1 );
 			scheduleServiceProxy.delSchedule(schedule);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {
@@ -125,6 +144,22 @@ public class ScheduleAction extends BaseAction{
 			RJLog.error(e);
 		}
 		return SUCCESS;
+	}
+	
+	public String cancelSchedule() {
+	    try {
+	        if(schedule == null || schedule.getId() == null) {
+	            responseJson( false, "参数错误！" );
+	            return SUCCESS;
+	        }
+            schedule.setIsDone( 3 );
+            scheduleServiceProxy.delSchedule(schedule);
+            responseJson(true, "日程取消成功!");
+        } catch (Exception e) {
+            responseJson(false, "日程取消失败!");
+            RJLog.error(e);
+        }
+        return SUCCESS;
 	}
 	
 	public ScheduleServiceIFC getScheduleServiceProxy() {
@@ -139,4 +174,26 @@ public class ScheduleAction extends BaseAction{
 	public void setSchedule(Schedule schedule) {
 		this.schedule = schedule;
 	}
+
+    
+    public DeviceServiceIFC getDeviceServiceProxy() {
+        return deviceServiceProxy;
+    }
+
+    
+    public void setDeviceServiceProxy( DeviceServiceIFC deviceServiceProxy ) {
+        this.deviceServiceProxy = deviceServiceProxy;
+    }
+
+    
+    public BuildingServiceIFC getBuildingServiceProxy() {
+        return buildingServiceProxy;
+    }
+
+    
+    public void setBuildingServiceProxy( BuildingServiceIFC buildingServiceProxy ) {
+        this.buildingServiceProxy = buildingServiceProxy;
+    }
+	
+	
 }

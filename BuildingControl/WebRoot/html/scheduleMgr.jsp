@@ -48,26 +48,18 @@ $(function(){
 		loadMsg : /*showProcess(true, '温馨提示', '正在加载数据, 请稍后...')*/'正在加载数据',
 		url: getPath() + "/schedule_listSchedule.action",  
 		columns:[[
-			{field:'scheduleDate',title:'日程时间',width:60,halign:"center", align:"left"},
-			{field:'buildingName',title:'楼层号',width:60,halign:"center", align:"left"},
-			{field:'deviceName',title:'设备名',width:60,halign:"center", align:"left"},
-			{field:'changeState',title:'设置状态',width:60,halign:"center", align:"left",formatter:function(value,rowData,rowIndex){
-				if(value == '0') return"<font color='green'>关</font>";
-				else if(value == '1') return"<font color='blue'>开</font>";
+			{field:'scheduleDate',title:'日程时间',width:60,halign:"center", align:"center"},
+			{field:'buildingName',title:'楼层号',width:60,halign:"center", align:"center"},
+			{field:'deviceName',title:'设备名',width:60,halign:"center", align:"center"},
+			{field:'changeState',title:'设置状态',width:60,halign:"center", align:"center",formatter:function(value,rowData,rowIndex){
+				if(value == '0') return"<img src='images/off.png' />";
+				else if(value == '1') return"<img src='images/on.png' />";
 				else return "";
 			}},
-			{field:'isDone',title:'状态',width:60,halign:"center", align:"left",formatter:function(value,rowData,rowIndex){
+			{field:'isDone',title:'状态',width:60,halign:"center", align:"center",formatter:function(value,rowData,rowIndex){
 				if(value == '1') return"<font color='black'>完成</font>";
 				else if(value == '2') return"<font color='red'>未完成</font>";
-			}},
-			{field:'sjhm1',title:'手机号码1',width:60,halign:"center", align:"left"},
-			{field:'zsbmmc',title:'直属部门名称',width:60,halign:"center", align:"left"},
-			{field:'zt',title:'用户状态',width:60,halign:"center", align:"left",formatter:function(value,rowData,rowIndex){
-				if(value == 'enable') return"<font color='black'>注册</font>";
-				else if(value == 'disable') return"<font color='pink'>禁用</font>";
-				else if(value == 'employ') return"<font color='green'>开通</font>";
-				else if(value == 'quit') return"<font color='grey'>退订</font>";
-				else if(value == 'arrearage') return"<font color='red'>欠费</font>";
+				else if(value == '3') return"<font color='gray'>已取消</font>";
 			}}
 		]],
 		showPageList:[10,20,30,40,50],
@@ -174,15 +166,16 @@ $(function(){
 			$('#form').form('load', row);
 		}
 		},{
-			text: '删除',
+			text: '取消日程',
 			iconCls: 'icon-remove',
 			handler: function(){
 				row = $('#tt').datagrid('getSelected');
-				if (row) {$.messager.confirm('警告','确定删除？',
+				var isdone = row.isDone;
+				if (row) {$.messager.confirm('警告',(isdone==1||isdone==3?'日程'+(isdone==1?'已完成':'已取消')+'，不能取消！':'取消日程后日程不会执行，确定取消该日程？'),
 					function(r) {
 						if (r) {
 							// 删除对象
-							$.post(getPath() + '/schedule_delSchedule.action',
+							$.post(getPath() + '/schedule_cancelSchedule.action',
 								{"schedule.id" :  row.id},
 								function(json) {
 									var result = eval(json);
@@ -197,6 +190,22 @@ $(function(){
 				} else {
 					showMsg('警告','请选择一条记录','alert');
 				}
+			}
+		},'-',{
+			text: '未完成日程',
+			iconCls: 'icon-no',
+			handler: function(){
+				$('#tt').datagrid({
+					queryParams : {'schedule.isDone':2}
+				});
+			}
+		},{
+			text: '所有日程',
+			iconCls: 'icon-ok',
+			handler: function(){
+				$('#tt').datagrid({
+					queryParams : {}
+				});
 			}
 		}],
 		onDblClickRow:function(rowIndex, rowData){

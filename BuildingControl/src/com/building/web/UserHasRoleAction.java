@@ -101,6 +101,7 @@ public class UserHasRoleAction extends BaseAction{
 	  */
 	public String delUserHasRole(){
 		try {
+		    userHasRole.setIsDel( 1 );
 			userHasRoleServiceProxy.delUserHasRole(userHasRole);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {

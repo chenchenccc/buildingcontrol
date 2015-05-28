@@ -24,6 +24,15 @@ public class RoleServiceImpl implements RoleServiceIFC {
 		//构造Criteria
 		RoleExample example = new RoleExample();
 		Criteria criteria = example.createCriteria();
+        
+        if(null != request.getParameter("rows") && null != request.getParameter("page")) {
+            int limit = Integer.parseInt(request.getParameter("rows"));
+            int start = (Integer.parseInt(request.getParameter("page")) - 1) * limit;
+            example.setLimitStart(start);
+            example.setLimitEnd(limit);
+        }
+        
+        criteria.andIsDelEqualTo( 1 );
 	
 		return roleDao.selectByExample(example);
 	}
@@ -48,6 +57,7 @@ public class RoleServiceImpl implements RoleServiceIFC {
 	 * @Description: 保存添加实体对象 
 	 */
 	public void saveAddRole(Role role) {
+	    role.setIsDel( 1 );
 		roleDao.insert(role);
 	}
 	

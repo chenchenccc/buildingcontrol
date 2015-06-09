@@ -47,7 +47,7 @@ public class RoleAction extends BaseAction{
 	  * @Description: 查看实体对象 
 	  */
 	public String viewRole(){
-		Role _role = roleServiceProxy.queryRole4Bean(role);
+		Role _role = roleServiceProxy.queryRoleById( role.getId() );
 		request.setAttribute("operate", "view");
 		request.setAttribute("role", _role);
 		return VIEW_SUCCESS;

@@ -57,6 +57,9 @@
 			</props>
 		</property>
 	</bean>
+	<bean name="timerScheduleAction" class="com.building.web.TimerScheduleAction" scope="prototype">
+		<property name="scheduleServiceProxy" ref="scheduleServiceProxy"></property>
+	</bean>
 	<bean name="createImageAction" class="com.building.web.CreateImageAction" scope="prototype"></bean>
 	<bean name="loginAction" class="com.building.web.LoginAction" scope="prototype">
 		<property name="userServiceProxy" ref="userServiceProxy"></property>
@@ -187,6 +190,8 @@
 	
 	<bean id="scheduleService" class="com.building.service.impl.ScheduleServiceImpl">
 		<property name="scheduleDao" ref="scheduleDao"></property>
+		<property name="deviceDao" ref="deviceDao"></property>
+		
 	</bean>
 	
 	<bean id="scheduleServiceProxy" parent="baseTransactionProxy">
@@ -199,6 +204,42 @@
 		<property name="scheduleServiceProxy" ref="scheduleServiceProxy"></property>
 	</bean>
 	
+	<!-- Autho实体Bean -->
+	<bean id="authoDao" class="com.building.dao.impl.AuthoDAOImpl" >
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
+	</bean>
+	
+	<bean id="authoService" class="com.building.service.impl.AuthoServiceImpl">
+		<property name="authoDao" ref="authoDao"></property>
+	</bean>
+	
+	<bean id="authoServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="authoService"></property>
+	</bean>
+	
+	<bean name="aliasAuthoAction" class="com.building.web.AuthoAction" scope="prototype">
+		<property name="authoServiceProxy" ref="authoServiceProxy"></property>
+	</bean>
+	
+	
+	
+	<!-- RoleHasAutho实体Bean -->
+	<bean id="roleHasAuthoDao" class="com.building.dao.impl.RoleHasAuthoDAOImpl" >
+		<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"></property>
+	</bean>
+	
+	<bean id="roleHasAuthoService" class="com.building.service.impl.RoleHasAuthoServiceImpl">
+		<property name="roleHasAuthoDao" ref="roleHasAuthoDao"></property>
+	</bean>
+	
+	<bean id="roleHasAuthoServiceProxy" parent="baseTransactionProxy">
+		<property name="target" ref="roleHasAuthoService"></property>
+	</bean>
+	
+	<bean name="aliasRoleHasAuthoAction" class="com.building.web.RoleHasAuthoAction" scope="prototype">
+		<property name="roleHasAuthoServiceProxy" ref="roleHasAuthoServiceProxy"></property>
+	</bean>
+
 
 
 

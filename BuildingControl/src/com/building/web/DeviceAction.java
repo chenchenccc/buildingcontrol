@@ -64,7 +64,17 @@ public class DeviceAction extends BaseAction{
 	  * @Description: 查看实体对象 
 	  */
 	public String viewDevice(){
-		Device _device = deviceServiceProxy.queryDevice4Bean(device);
+		Device _device = deviceServiceProxy.queryDeviceById( device.getId() );
+		List<Device> retDeviceList = new ArrayList<Device>();
+        // 添加所属楼层字段
+        Long bid = _device.getBuildingId();
+        Building building = buildingServiceProxy.queryBuildingById( bid.intValue() );
+        if(building != null && building.getSuperId() != 0 ) {
+            
+            Building superBuilding = buildingServiceProxy.queryBuildingById( building.getSuperId() );
+            building.setBuildingName( superBuilding.getBuildingName() + ">" + building.getBuildingName() ); 
+        }
+        _device.setBuildingName( building.getBuildingName() );
 		request.setAttribute("operate", "view");
 		request.setAttribute("device", _device);
 		return VIEW_SUCCESS;
@@ -75,6 +85,7 @@ public class DeviceAction extends BaseAction{
 	  */
 	public String editDevice(){
 		Device _device = deviceServiceProxy.queryDevice4Bean(device);
+        
 		request.setAttribute("operate", "edit");
 		request.setAttribute("device", _device);
 		return EDIT_SUCCESS;

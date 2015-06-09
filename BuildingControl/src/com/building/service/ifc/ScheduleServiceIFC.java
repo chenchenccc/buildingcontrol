@@ -1,5 +1,6 @@
 package com.building.service.ifc;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,5 +49,14 @@ public interface ScheduleServiceIFC {
 	 * @Description: 根据ID查询对象
 	 */
 	Schedule queryScheduleById( Integer id);
+
+
+	/**
+	 * 执行日程任务
+	 * @author chenrh
+	 *
+	 * @param date
+	 */
+    void getScheduleTask( Date date );
 	
 }

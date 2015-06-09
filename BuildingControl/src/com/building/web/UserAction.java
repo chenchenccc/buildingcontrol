@@ -47,7 +47,7 @@ public class UserAction extends BaseAction{
 	  * @Description: 查看实体对象 
 	  */
 	public String viewUser(){
-		User _user = userServiceProxy.queryUser4Bean(user);
+		User _user = userServiceProxy.queryUserById( user.getId() );
 		request.setAttribute("operate", "view");
 		request.setAttribute("user", _user);
 		return VIEW_SUCCESS;
@@ -126,6 +126,18 @@ public class UserAction extends BaseAction{
 			RJLog.error(e);
 		}
 		return SUCCESS;
+	}
+	
+	public String disableUser() {
+	    try {
+            user.setIsOnline( 3L );
+            userServiceProxy.delUser(user);
+            responseJson(true, "禁用用户成功!");
+        } catch (Exception e) {
+            responseJson(false, "禁用用户失败!");
+            RJLog.error(e);
+        }
+        return SUCCESS;
 	}
 	
 	public UserServiceIFC getUserServiceProxy() {

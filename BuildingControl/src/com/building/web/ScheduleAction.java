@@ -67,7 +67,17 @@ public class ScheduleAction extends BaseAction{
 	  * @Description: 查看实体对象 
 	  */
 	public String viewSchedule(){
-		Schedule _schedule = scheduleServiceProxy.querySchedule4Bean(schedule);
+		Schedule _schedule = scheduleServiceProxy.queryScheduleById( schedule.getId() );
+		
+		Device d = deviceServiceProxy.queryDeviceById( _schedule.getDeviceId() );
+        Building b = buildingServiceProxy.queryBuildingById( d.getBuildingId().intValue() );
+        if(b != null && b.getSuperId() != 0) {
+            Building superb = buildingServiceProxy.queryBuildingById( b.getSuperId() );
+            b.setBuildingName( superb.getBuildingName() + ">" + b.getBuildingName() );
+        }
+        _schedule.setBuildingName( b.getBuildingName() );
+        _schedule.setDeviceName( d.getDeviceName() );
+        
 		request.setAttribute("operate", "view");
 		request.setAttribute("schedule", _schedule);
 		return VIEW_SUCCESS;
@@ -121,6 +131,7 @@ public class ScheduleAction extends BaseAction{
             if(loginUser != null) {
                 schedule.setCreateUserId( loginUser.getId() );
             }
+            schedule.setIsDone( 2 );
             schedule.setCreateTime( new Date() );
 			scheduleServiceProxy.saveAddSchedule(schedule);
 			responseJson(true, "添加成功!");

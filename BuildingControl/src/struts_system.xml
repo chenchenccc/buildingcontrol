@@ -7,7 +7,13 @@
 
 	<!-- 应用构建模块-->
     <package name="system" namespace="/" extends="default">
-    
+    	<!-- 定时任务 -->
+    	<action name="timerScheduleAction" method="timer" class="timerScheduleAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+    	</action>
    		<!-- 验证码 -->
     	<action name="createImageAction" class="createImageAction">
 			<result name="success" type="stream">
@@ -119,6 +125,29 @@
 		<result name="ADD_SUCCESS" type="dispatcher">/html/scheduleInfo.jsp</result>
 		</action> 
 		
+		<!-- Autho实体Bean -->
+		<action name="autho_*" method="{1}" class="aliasAuthoAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		<result name="LIST_SUCCESS" type="dispatcher">/html/authoList.jsp</result>
+		<result name="VIEW_SUCCESS" type="dispatcher">/html/authoInfo.jsp</result>
+		<result name="EDIT_SUCCESS" type="dispatcher">/html/authoInfo.jsp</result>
+		<result name="ADD_SUCCESS" type="dispatcher">/html/authoInfo.jsp</result>
+		</action> 
+		
+		<!-- RoleHasAutho实体Bean -->
+		<action name="roleHasAutho_*" method="{1}" class="aliasRoleHasAuthoAction">
+			<result name="success" type="stream">
+				<param name="contentType">text/html</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		<result name="LIST_SUCCESS" type="dispatcher">/html/roleHasAuthoList.jsp</result>
+		<result name="VIEW_SUCCESS" type="dispatcher">/html/roleHasAuthoInfo.jsp</result>
+		<result name="EDIT_SUCCESS" type="dispatcher">/html/roleHasAuthoInfo.jsp</result>
+		<result name="ADD_SUCCESS" type="dispatcher">/html/roleHasAuthoInfo.jsp</result>
+		</action>
 				  
     </package>
 </struts>

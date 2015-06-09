@@ -39,7 +39,7 @@ public class LoginAction extends BaseAction {
      * @author chenrh
      * @return
      */
-    public String login() {
+    public String login() throws Exception{
         // 1、验证验证码是否匹配
         HttpSession session = request.getSession();
         String v = (String) session.getAttribute( "validcode" );

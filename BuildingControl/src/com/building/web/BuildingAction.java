@@ -64,7 +64,7 @@ public class BuildingAction extends BaseAction{
 	  * @Description: 查看实体对象 
 	  */
 	public String viewBuilding(){
-		Building _building = buildingServiceProxy.queryBuilding4Bean(building);
+		Building _building = buildingServiceProxy.queryBuildingById( building.getId() );
 		request.setAttribute("operate", "view");
 		request.setAttribute("building", _building);
 		return VIEW_SUCCESS;

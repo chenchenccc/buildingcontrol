@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>日程管理</title>
+	<title>权限管理</title>
 	<link rel="stylesheet" type="text/css" href="css/default.css">
 	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.3.5/themes/bootstrap/easyui.css" />
 	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.3.5/themes/icon.css" />
@@ -46,21 +46,11 @@ $(function(){
 		fitColumns:true,
 		rownumbers:true,
 		loadMsg : /*showProcess(true, '温馨提示', '正在加载数据, 请稍后...')*/'正在加载数据',
-		url: getPath() + "/schedule_listSchedule.action",  
+		url: getPath() + "/autho_listRole.action",  
 		columns:[[
-			{field:'scheduleDate',title:'日程时间',width:60,halign:"center", align:"center"},
-			{field:'buildingName',title:'楼层号',width:60,halign:"center", align:"center"},
-			{field:'deviceName',title:'设备名',width:60,halign:"center", align:"center"},
-			{field:'changeState',title:'设置状态',width:60,halign:"center", align:"center",formatter:function(value,rowData,rowIndex){
-				if(value == '0') return"<img src='images/off.png' />";
-				else if(value == '1') return"<img src='images/on.png' />";
-				else return "";
-			}},
-			{field:'isDone',title:'状态',width:60,halign:"center", align:"center",formatter:function(value,rowData,rowIndex){
-				if(value == '1') return"<font color='black'>完成</font>";
-				else if(value == '2') return"<font color='red'>未完成</font>";
-				else if(value == '3') return"<font color='gray'>已取消</font>";
-			}}
+			{field:'authoName',title:'角色名称',width:60,halign:"center", align:"center"},
+			{field:'description',title:'描述',width:60,halign:"center", align:"center"},
+			{field:'createTime',title:'创建时间',width:60,halign:"center", align:"center"}
 		]],
 		showPageList:[10,20,30,40,50],
 		pageNumber: 1, // 初始页数
@@ -79,7 +69,7 @@ $(function(){
 			        		var formData=$("#saveform").serialize();
 			        		$.ajax({
 								type: "POST",
-								url: getPath() + '/schedule_saveAddSchedule.action',
+								url: getPath() + '/autho_saveAddRole.action',
 								processData: true,
 								data: formData,
 								success: function(data){
@@ -105,7 +95,7 @@ $(function(){
 			    });
 				$("#content").html(''); // 先将content的内容清空
 				// 保存对象
-				$.post(getPath()+"/schedule_addSchedule.action",
+				$.post(getPath()+"/autho_addRole.action",
 				    function(result){
 						$("#content").append(result);
 				    });
@@ -113,17 +103,69 @@ $(function(){
 			    $('#form').form('clear');
 			}
 		},{
-			text: '取消日程',
+			text: '修改',
+			iconCls: 'icon-edit',
+			handler: function(){
+				$('#dd').dialog({
+		        buttons: [{
+		            text:'保存',
+		            iconCls:'icon-ok',
+		            handler:function(){
+		        		var formData=$("#saveform").serialize();
+						// 保存编辑对象		        		
+		        		$.ajax({
+							type: "POST",
+							url: getPath() + '/autho_saveEditRole.action',
+							processData:true,
+							data:formData,
+							success: function(data){
+								var result = eval("("+data+")");
+								if (result && result.success) {
+									$('#tt').datagrid('reload');
+									$.messager.show({title : '信息',msg : result.msg});
+								} else {
+									$.messager.show({title : '错误',msg : result.msg});
+								}
+		        				$('#tt').datagrid('reload');
+							}
+		        		});
+		                $("#dd").dialog('close');
+						$('#tt').datagrid('reload');
+		            }
+		        },{
+		            text:'取消',
+		            iconCls:'icon-cancel',
+		            handler:function(){
+		                $("#dd").dialog('close');
+		            }
+		        }]
+		    });
+			var row = $('#tt').datagrid('getSelected');
+			if(row == null) {
+				showMsg('警告','请选择一条记录','alert');
+				return;
+			}
+			$("#content").html(''); // 先将content的内容清空
+			// 获取编辑对象
+			$.post(getPath()+"/autho_editRole.action",
+				{"autho.id": row.id},
+			    function(result){  
+					$("#content").append(result);
+			    });
+			$("#dd").dialog('open').dialog('setTitle', '修改');
+			$('#form').form('load', row);
+		}
+		},{
+			text: '删除',
 			iconCls: 'icon-remove',
 			handler: function(){
 				row = $('#tt').datagrid('getSelected');
-				var isdone = row.isDone;
-				if (row) {$.messager.confirm('警告',(isdone==1||isdone==3?'日程'+(isdone==1?'已完成':'已取消')+'，不能取消！':'取消日程后日程不会执行，确定取消该日程？'),
+				if (row) {$.messager.confirm('警告','确定删除？',
 					function(r) {
 						if (r) {
 							// 删除对象
-							$.post(getPath() + '/schedule_cancelSchedule.action',
-								{"schedule.id" :  row.id},
+							$.post(getPath() + '/autho_delRole.action',
+								{"autho.id" :  row.id},
 								function(json) {
 									var result = eval(json);
 									if (result && result.success) {
@@ -137,22 +179,6 @@ $(function(){
 				} else {
 					showMsg('警告','请选择一条记录','alert');
 				}
-			}
-		},'-',{
-			text: '未完成日程',
-			iconCls: 'icon-no',
-			handler: function(){
-				$('#tt').datagrid({
-					queryParams : {'schedule.isDone':2}
-				});
-			}
-		},{
-			text: '所有日程',
-			iconCls: 'icon-ok',
-			handler: function(){
-				$('#tt').datagrid({
-					queryParams : {}
-				});
 			}
 		}],
 		onDblClickRow:function(rowIndex, rowData){
@@ -192,8 +218,8 @@ function viewDetail(data){
 	var row = $('#tt').datagrid('getSelected');
 	$("#content").html(''); // 先将content的内容清空
 	// 查看对象
-	$.post(getPath()+"/schedule_viewSchedule.action",
-		{"schedule.id" : row.id },
+	$.post(getPath()+"/autho_viewRole.action",
+		{"autho.id" : row.id },
 	    function(result){ 
 			$("#content").append(result);
 	    });

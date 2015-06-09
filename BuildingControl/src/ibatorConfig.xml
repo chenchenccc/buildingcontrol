@@ -14,7 +14,8 @@
 			targetProject="BuildingControl/src" />
 		<daoGenerator targetPackage="com.building.dao"
 			targetProject="BuildingControl/src" type="SPRING" />
-		<table tableName="user"></table>
+		<table tableName="autho"></table>
+		<table tableName="role_has_autho"></table>
 		<!--<table tableName="user_has_role"></table>
 		<table tableName="role"></table>
 		<table tableName="role_has_building"></table>

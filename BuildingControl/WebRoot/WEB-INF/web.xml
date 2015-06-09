@@ -65,14 +65,23 @@
 			<param-value>/WEB-INF/classes/log4j.properties</param-value>
 		</init-param>
 		<load-on-startup>0</load-on-startup>
-	</servlet>
-	<servlet-mapping>
+	</servlet><!--
+  <servlet>
+    <servlet-name>TimerServlet</servlet-name>
+    <servlet-class>com.building.web.TimerServlet</servlet-class>
+  </servlet>
+
+	--><servlet-mapping>
 		<servlet-name>Log4jServlet</servlet-name>
 		<url-pattern>/log4jServlet</url-pattern>
 	</servlet-mapping>
+  <!--<servlet-mapping>
+    <servlet-name>TimerServlet</servlet-name>
+    <url-pattern>/timerServlet</url-pattern>
+  </servlet-mapping>
 
 	
-	<!-- 首页 -->
+	--><!-- 首页 -->
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>

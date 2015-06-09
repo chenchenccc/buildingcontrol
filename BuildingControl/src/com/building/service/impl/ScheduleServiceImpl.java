@@ -1,11 +1,13 @@
 package com.building.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.building.commons.global.PageBean;
+import com.building.dao.ifc.DeviceDAO;
 import com.building.dao.ifc.ScheduleDAO;
+import com.building.model.Device;
 import com.building.model.Schedule;
 import com.building.model.ScheduleExample;
 import com.building.model.ScheduleExample.Criteria;
@@ -16,6 +18,7 @@ public class ScheduleServiceImpl implements ScheduleServiceIFC {
 	 * @Description: DAO对象 
 	 */
 	private ScheduleDAO scheduleDao;
+	private DeviceDAO deviceDao;
 	
 	/**
 	 * @Description: 获取实体列表 
@@ -96,10 +99,50 @@ public class ScheduleServiceImpl implements ScheduleServiceIFC {
 	  return scheduleDao.selectByPrimaryKey(id);
 	}
 	
+	public void getScheduleTask( Date date ) {
+	    System.out.println(date);
+        ScheduleExample example = new ScheduleExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andIsDelEqualTo( 1 );
+        criteria.andScheduleDateLessThan( date );
+        criteria.andIsDoneEqualTo( 2 ); // 未完成
+
+        List<Schedule> list = scheduleDao.selectByExample( example );
+        
+        // 执行日程
+        for (Schedule s : list) {
+            s.getDeviceId();
+            s.getChangeState();
+            Device d = new Device();
+            d.setId( s.getDeviceId() );
+            d.setState( s.getChangeState() );
+            deviceDao.updateByPrimaryKeySelective( d  );
+            Schedule record = new Schedule();
+            record.setId( s.getId() );
+            record.setIsDone( 1 );
+            scheduleDao.updateByPrimaryKeySelective( record  );
+            System.out.println("设备"+d.getId()+"状态已经改变为"+(d.getState()==0?'关':'开'));
+        }
+        
+    }
+	
 	public ScheduleDAO getScheduleDao() {
 		return scheduleDao;
 	}
 	public void setScheduleDao(ScheduleDAO scheduleDao) {
 		this.scheduleDao = scheduleDao;
 	}
+
+    
+    public DeviceDAO getDeviceDao() {
+        return deviceDao;
+    }
+
+
+    
+    public void setDeviceDao( DeviceDAO deviceDao ) {
+        this.deviceDao = deviceDao;
+    }
+    
+    
 }

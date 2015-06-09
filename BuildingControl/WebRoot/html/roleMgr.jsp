@@ -48,9 +48,9 @@ $(function(){
 		loadMsg : /*showProcess(true, '温馨提示', '正在加载数据, 请稍后...')*/'正在加载数据',
 		url: getPath() + "/role_listRole.action",  
 		columns:[[
-			{field:'roleName',title:'角色名称',width:60,halign:"center", align:"left"},
-			{field:'description',title:'描述',width:60,halign:"center", align:"left"},
-			{field:'createTime',title:'创建时间',width:60,halign:"center", align:"left"}
+			{field:'roleName',title:'角色名称',width:60,halign:"center", align:"center"},
+			{field:'description',title:'描述',width:60,halign:"center", align:"center"},
+			{field:'createTime',title:'创建时间',width:60,halign:"center", align:"center"}
 		]],
 		showPageList:[10,20,30,40,50],
 		pageNumber: 1, // 初始页数

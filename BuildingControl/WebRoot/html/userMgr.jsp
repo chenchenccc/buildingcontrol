@@ -50,9 +50,10 @@ $(function(){
 		columns:[[
 			{field:'username',title:'用户名',width:60,halign:"center", align:"center"},
 			{field:'lastLogin',title:'最后登陆时间',width:60,halign:"center", align:"center"},
-			{field:'isOnline',title:'是否在线',width:60,halign:"center", align:"center",formatter:function(value,rowData,rowIndex){
+			{field:'isOnline',title:'状态 ',width:60,halign:"center", align:"center",formatter:function(value,rowData,rowIndex){
 				if(value == '1') return"在线";
 				else if(value == '2') return"离线";
+				else if(value == '3') return"<font color='gray'>禁用</font>";
 			}}
 		]],
 		showPageList:[10,20,30,40,50],
@@ -114,7 +115,7 @@ $(function(){
 					function(r) {
 						if (r) {
 							// 删除对象
-							$.post(getPath() + '/user_delUser.action',
+							$.post(getPath() + '/user_disableUser.action',
 								{"user.id" :  row.id},
 								function(json) {
 									var result = eval(json);

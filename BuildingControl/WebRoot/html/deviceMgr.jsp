@@ -103,13 +103,13 @@ $(function(){
 		columns:[[
 			{field:'deviceName',title:'设备名称',width:60,halign:"center", align:"center"},
 			{field:'deviceType',title:'设备类型',width:60,halign:"center", align:"center",formatter:function(value,rowData,rowIndex){
-				if(value == '1') return"电灯";
-				else if(value == '2') return"电风扇";
-				else if(value == '3') return"空调";
-				else if(value == '4') return"电视机";
-				else if(value == '5') return"洗衣机";
-				else if(value == '5') return"热水器";
-				else if(value == '5') return"插座";
+				if(value == 1) return"电灯";
+				else if(value == 2) return"电风扇";
+				else if(value == 3) return"空调";
+				else if(value == 4) return"电视机";
+				else if(value == 5) return"洗衣机";
+				else if(value == 6) return"热水器";
+				else if(value == 7) return"插座";
 				else return "";
 			}},
 			{field:'state',title:'状态',width:60,halign:"center",  align:"center",formatter:function(value,rowData,rowIndex){
@@ -129,47 +129,15 @@ $(function(){
 			text: '添加',
 			iconCls: 'icon-add',
 			handler: function(){
-				$('#dd').dialog({
-			        buttons: [{
-			            text:'保存',
-			            iconCls:'icon-ok',
-			            handler:function(){
-			        		 // 保存添加对象
-			        		var formData=$("#saveform").serialize();
-			        		$.ajax({
-								type: "POST",
-								url: getPath() + '/device_saveAddDevice.action',
-								processData: true,
-								data: formData,
-								success: function(data){
-			        				var result = eval("("+data+")");
-									if (result && result.success) {
-										$('#tt').datagrid('reload');
-										$.messager.show({title : '信息',msg : result.msg});
-									} else {
-										$.messager.show({title : '错误',msg : result.msg});
-									}
-			        			
-								}
-			        		});
-			                $("#dd").dialog('close');
-			            }
-			        },{
-			            text:'取消',
-			            iconCls:'icon-cancel',
-			            handler:function(){
-			                $("#dd").dialog('close');
-			            }
-			        }]
-			    });
+				
 				$("#content").html(''); // 先将content的内容清空
 				// 保存对象
 				$.post(getPath()+"/device_addDevice.action",
 				    function(result){
 						$("#content").append(result);
+						showDialog();	
+						
 				    });
-				$("#dd").dialog('open').dialog('setTitle', '添加');
-			    $('#form').form('clear');
 			}
 		},{
 			text: '修改',
@@ -323,7 +291,43 @@ function viewDetail(data){
 	    });
 	$("#dd").dialog('open').dialog('setTitle', '查看');
 }
-
+function showDialog() {
+	$('#dd').dialog({
+       buttons: [{
+           text:'保存',
+           iconCls:'icon-ok',
+           handler:function(){
+       		 // 保存添加对象
+       		var formData=$("#saveform").serialize();
+       		$.ajax({
+				type: "POST",
+				url: getPath() + '/device_saveAddDevice.action',
+				processData: true,
+				data: formData,
+				success: function(data){
+       				var result = eval("("+data+")");
+					if (result && result.success) {
+						$('#tt').datagrid('reload');
+						$.messager.show({title : '信息',msg : result.msg});
+					} else {
+						$.messager.show({title : '错误',msg : result.msg});
+					}
+       			
+				}
+       		});
+               $("#dd").dialog('close');
+           }
+       },{
+           text:'取消',
+           iconCls:'icon-cancel',
+           handler:function(){
+               $("#dd").dialog('close');
+           }
+       }]
+   });
+$("#dd").dialog('open').dialog('setTitle', '添加');
+   $('#form').form('clear');
+}
 </script>
 </html>
 	

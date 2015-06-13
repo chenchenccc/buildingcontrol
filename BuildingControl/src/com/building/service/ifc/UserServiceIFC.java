@@ -67,5 +67,13 @@ public interface UserServiceIFC {
      * @return
      */
     List<Role> getRoleList( Integer userId );
+    
+    /**
+     * 更新密码
+     * @author chenrh
+     *
+     * @param smUser
+     */
+    void updataPassword( User user );
 	
 }

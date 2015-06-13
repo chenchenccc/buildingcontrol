@@ -31,7 +31,12 @@ public class UserHasRoleServiceImpl implements UserHasRoleServiceIFC {
             example.setLimitStart(start);
             example.setLimitEnd(limit);
         }
-        
+        if(userHasRole != null && userHasRole.getRoleId() != null) {
+            criteria.andRoleIdEqualTo( userHasRole.getRoleId() );
+        }
+        if(userHasRole != null && userHasRole.getUserId() != null) {
+            criteria.andUserIdEqualTo( userHasRole.getUserId() );
+        }
         criteria.andIsDelEqualTo( 1 );
 	
 		return userHasRoleDao.selectByExample(example);
@@ -46,9 +51,17 @@ public class UserHasRoleServiceImpl implements UserHasRoleServiceIFC {
 		//构造Criteria
 		UserHasRoleExample example = new UserHasRoleExample();
 		Criteria criteria = example.createCriteria();
-	
+		if(userHasRole != null && userHasRole.getRoleId() != null) {
+            criteria.andRoleIdEqualTo( userHasRole.getRoleId() );
+        }
+        if(userHasRole != null && userHasRole.getUserId() != null) {
+            criteria.andUserIdEqualTo( userHasRole.getUserId() );
+        }
+        if(userHasRole != null && userHasRole.getIsDel() != null) {
+            criteria.andIsDelEqualTo( userHasRole.getIsDel() );
+        }
 		List<UserHasRole> list= userHasRoleDao.selectByExample(example);
-		if(list != null && list.size() >= 0){
+		if(list != null && list.size() > 0){
 			_userHasRole = list.get(0);
 		}
 	return _userHasRole;
@@ -74,7 +87,17 @@ public class UserHasRoleServiceImpl implements UserHasRoleServiceIFC {
 	 * @Description: 删除实体对象 
 	 */
 	public void delUserHasRole(UserHasRole userHasRole) {
-		userHasRoleDao.updateByPrimaryKeySelective(userHasRole);
+	    UserHasRoleExample example = new UserHasRoleExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andUserIdEqualTo( userHasRole.getUserId() );
+        criteria.andRoleIdEqualTo( userHasRole.getRoleId() );
+        criteria.andIsDelEqualTo( 1 );
+        List list = userHasRoleDao.selectByExample( example );
+        if(list != null && list.size()> 0) {
+            UserHasRole record = (UserHasRole) list.get( 0 );
+            userHasRole.setId( record.getId() );
+            userHasRoleDao.updateByPrimaryKeySelective(userHasRole);
+        }
 	}
 	
 	/**

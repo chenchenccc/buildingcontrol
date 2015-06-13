@@ -180,6 +180,19 @@ $(function(){
 					showMsg('警告','请选择一条记录','alert');
 				}
 			}
+		},'-',{
+			text: '权限',
+			iconCls: 'icon-ok',
+			handler: function(){
+				
+				//saveAutho()
+				row = $('#tt').datagrid('getSelected');
+				if (row) {
+					viewAutho();
+				} else {
+					showMsg('警告','请选择一条记录','alert');
+				}
+			}
 		}],
 		onDblClickRow:function(rowIndex, rowData){
 			viewDetail(rowData.id);
@@ -192,7 +205,8 @@ $(function(){
 	    cache: false,
 	    modal: true,
         iconCls: 'icon-save'
-    });
+        
+	});
 
 });
 function fuzzyquery() {
@@ -225,7 +239,116 @@ function viewDetail(data){
 	    });
 	$("#dd").dialog('open').dialog('setTitle', '查看');
 }
-
+/**
+ * 查看权限
+ */
+function viewAutho(){
+	var row = $('#tt').datagrid('getSelected');
+	$("#content").html(''); // 先将content的内容清空
+	$("#content").append('<font color="red">'+row.roleName+'</font>角色拥有如下权限：<br/>')
+	// 查看权限
+	$.post(getPath() + '/role_authoList.action',
+		{"role.id" :  row.id},
+		function(json) {
+			var result = eval(json);
+			console.log(result);
+			if (result && result.success) {
+				// $('#tt').datagrid('reload'); 
+				var data = result.msg;
+				for(var i in data) {
+					console.log(data[i].authoName);
+					$("#content").append("<a onclick='delAutho("+data[i].id+")'>"+data[i].authoName+", ");
+				}
+				$("#content").append("<hr />添加权限");
+				
+				$.post(getPath() + '/role_addAuthoList.action',
+					{"role.id" :  row.id},
+					function(json) {
+						var result = eval(json);
+						console.log(result);
+						if (result && result.success) {
+							// $('#tt').datagrid('reload'); 
+							var data = result.msg;
+							for(var i in data) {
+								$("#content").append('<input type="checkbox" name="autho" value="'+data[i].id+'">'+data[i].authoName);
+							}
+						} else {
+							$.messager.show({title : 'Error',msg : result.msg});
+						}
+					},'json');
+				
+			} else {
+				$.messager.show({title : 'Error',msg : result.msg});
+			}
+		},'json');
+	
+	
+	
+	////
+	$('#dd').dialog({
+        buttons: [{
+            text:'确定',
+            iconCls:'icon-ok',
+            handler:function(){
+            	saveAutho();
+                $("#dd").dialog('close');
+            }
+        }]
+    });
+	////
+	$("#dd").dialog('open').dialog('setTitle', '查看权限');
+}
+function saveAutho() {
+	var row = $('#tt').datagrid('getSelected');
+	var result = new Array();
+    $("[name = autho]:checkbox").each(function () {
+        if ($(this).is(":checked")) {
+            result.push($(this).attr("value"));
+        }
+    });
+    //alert(result.join(","));
+    // 删除对象
+	$.post(getPath()+"/roleHasAutho_saveAddRoleHasAutho.action",
+		{"roleHasAutho.roleId" : row.id, "authoIds": result.join(",") },
+	    function(result){ 
+			//$("#content").append(result);
+			var json = eval("("+result+")");
+			console.log(json);
+			if (json && json.success) {
+				//	$('#tt').datagrid('reload'); ;
+				viewAutho();
+				$("#dd").dialog('close');
+				$.messager.show({title : 'Info',msg : "添加权限成功！"});
+			} else {
+				$.messager.show({title : 'Error',msg : json.msg});
+			}
+	    });
+}
+function delAutho(id) {
+	var row = $('#tt').datagrid('getSelected');
+	$.messager.confirm('警告','确定取消该权限？',
+	function(r) {
+		if (r) {
+			// 删除对象
+			$.post(getPath()+"/roleHasAutho_delRoleHasAutho.action",
+				{"roleHasAutho.roleId" : row.id, "roleHasAutho.authoId": id },
+			    function(result){ 
+					//$("#content").append(result);
+					
+					var json = eval("("+result+")");
+					console.log(json);
+					if (json && json.success) {
+						//	$('#tt').datagrid('reload'); ;
+						viewAutho();
+						$.messager.show({title : 'Info',msg : "取消权限成功！"});
+					} else {
+						$.messager.show({title : 'Error',msg : json.msg});
+					}
+			    });
+		}
+	});
+	
+}
 </script>
 </html>
 	

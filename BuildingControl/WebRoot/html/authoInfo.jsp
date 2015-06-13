@@ -18,8 +18,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<td><label>${autho.authoName}</label></td>
 		</tr>
 		<tr>
-			<td><label>上级权限:</label></td>
-			<td><label>${autho.superId}</label></td>
+			<td><label>URL：</label></td>
+			<td><label>${autho.url}</label></td>
+		</tr>
+		<tr>
+			<td><label>上级权限：</label></td>
+			<td><label>${autho.superName}</label></td>
+		</tr>
+		<tr>
+			<td><label>描述:</label></td>
+			<td><label>${autho.description}</label></td>
 		</tr>
 	</table>
 </form>
@@ -30,6 +38,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 	<tr>
 	      	<td><span class="x">*</span>权限名称</td>
 	      	<td><input class="easyui-textbox" style="width:250px" type="text" name="autho.authoName" data-options="required:true"></input></td>
+	  	</tr>
+	  	<tr>
+	      	<td><span class="x">*</span>URL</td>
+	      	<td><input class="easyui-textbox" style="width:250px" type="text" name="autho.url" data-options="required:true"></input></td>
+	  	</tr>
+	  	<tr>
+	      	<td><span class="x">*</span>上级权限</td>
+	      	<td>
+	      		<select name="autho.superId" class="easyui-combogrid" style="width:250px" data-options="
+			            panelWidth: 500,
+			            idField: 'id',
+			            textField: 'authoName',
+			            url: getPath()+'/autho_listAutho.action',
+			            method: 'post',
+			            columns: [[
+			                {field:'authoName',title:'权限名称',width:80,align:'center'},
+			                {field:'url',title:'URL',width:120,align:'center'},
+			                {field:'superName',title:'上级权限',width:120,align:'center'},
+			            ]],
+			            fitColumns: true
+			        ">
+			    </select>
+	      	</td>
 	  	</tr>
 	  	<tr>
 	      	<td><span class="x">*</span>描述</td>
@@ -45,6 +76,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 	<tr>
 	      	<td><span class="x">*</span>权限名称</td>
 	      	<td><input class="easyui-textbox" style="width:250px" type="text" name="autho.authoName" value="${autho.authoName }" data-options="required:true"></input></td>
+	  	</tr>
+	  	<tr>
+	      	<td><span class="x">*</span>URL</td>
+	      	<td><input class="easyui-textbox" style="width:250px" type="text" name="autho.authoName" value="${autho.url }" data-options="required:true"></input></td>
+	  	</tr>
+	  	<tr>
+	      	<td><span class="x">*</span>上级权限</td>
+	      	<td>
+	      		<select name="autho.superId" class="easyui-combogrid" value="${autho.superId }" style="width:250px" data-options="
+			            panelWidth: 500,
+			            idField: 'id',
+			            textField: 'authoName',
+			            url: getPath()+'/autho_listAutho.action',
+			            method: 'post',
+			            columns: [[
+			                {field:'authoName',title:'权限名称',width:80,align:'center'},
+			                {field:'url',title:'URL',width:120,align:'center'},
+			                {field:'superName',title:'上级权限',width:120,align:'center'},
+			            ]],
+			            fitColumns: true
+			        ">
+			    </select>
+	      	</td>
 	  	</tr>
 	  	<tr>
 	      	<td><span class="x">*</span>描述</td>

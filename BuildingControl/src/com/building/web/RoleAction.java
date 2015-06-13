@@ -1,5 +1,6 @@
 package com.building.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,8 +12,12 @@ import net.sf.json.JsonConfig;
 import com.building.commons.base.BaseAction;
 import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
+import com.building.model.Autho;
 import com.building.model.Role;
+import com.building.model.RoleHasAutho;
 import com.building.model.User;
+import com.building.service.ifc.AuthoServiceIFC;
+import com.building.service.ifc.RoleHasAuthoServiceIFC;
 import com.building.service.ifc.RoleServiceIFC;
 
 @SuppressWarnings("serial")
@@ -21,7 +26,9 @@ public class RoleAction extends BaseAction{
 	  * @Description: 业务代理对象 
 	  */
 	private RoleServiceIFC roleServiceProxy;
-	
+    private RoleHasAuthoServiceIFC roleHasAuthoServiceProxy;
+    private AuthoServiceIFC authoServiceProxy;
+    
 	/**
 	  * @Description:  实体对象
 	  */
@@ -116,7 +123,7 @@ public class RoleAction extends BaseAction{
 	  */
 	public String delRole(){
 		try {
-		    role.setIsDel( 1 );
+		    role.setIsDel( 2 );
 			roleServiceProxy.delRole(role);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {
@@ -125,6 +132,52 @@ public class RoleAction extends BaseAction{
 		}
 		return SUCCESS;
 	}
+	
+
+    public String authoList(){
+        try {
+            RoleHasAutho roleAutho = new RoleHasAutho();
+            roleAutho.setRoleId( role.getId() );
+            List<RoleHasAutho> raList = roleHasAuthoServiceProxy.queryRoleHasAutho4List( request, roleAutho  );
+            List<Autho> authoList = new ArrayList<Autho>();
+            for (RoleHasAutho ra : raList) {
+                Autho autho = authoServiceProxy.queryAuthoById( ra.getAuthoId() );
+                if(autho != null) {
+                    authoList.add( autho );
+                }
+            }
+            request.setAttribute("authoList", authoList);
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+            
+            jsonArr= JSONArray.fromObject( authoList, jsonConfig );
+            
+            responseJson(true, jsonArr);
+        } catch (Exception e) {
+            responseJson(false, "服务出错了!");
+            RJLog.error(e);
+        }
+        return SUCCESS;
+    }
+    
+    public String addAuthoList(){
+        try {
+            RoleHasAutho roleAutho = new RoleHasAutho();
+            roleAutho.setRoleId( role.getId() );
+            List<Autho> allList = authoServiceProxy.queryAutho4List( request, null );
+            Autho smAutho = null;
+            request.setAttribute("authoList", allList);
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+            
+            jsonArr= JSONArray.fromObject( allList, jsonConfig );
+            
+            responseJson(true, jsonArr);
+        } catch (Exception e) {
+            responseJson(false, "服务出错了!");
+            e.printStackTrace();
+            RJLog.error(e);
+        }
+        return SUCCESS;
+    }
 	
 	public RoleServiceIFC getRoleServiceProxy() {
 		return roleServiceProxy;
@@ -138,4 +191,26 @@ public class RoleAction extends BaseAction{
 	public void setRole(Role role) {
 		this.role = role;
 	}
+
+    
+    public RoleHasAuthoServiceIFC getRoleHasAuthoServiceProxy() {
+        return roleHasAuthoServiceProxy;
+    }
+
+    
+    public void setRoleHasAuthoServiceProxy( RoleHasAuthoServiceIFC roleHasAuthoServiceProxy ) {
+        this.roleHasAuthoServiceProxy = roleHasAuthoServiceProxy;
+    }
+
+    
+    public AuthoServiceIFC getAuthoServiceProxy() {
+        return authoServiceProxy;
+    }
+
+    
+    public void setAuthoServiceProxy( AuthoServiceIFC authoServiceProxy ) {
+        this.authoServiceProxy = authoServiceProxy;
+    }
+	
+	
 }

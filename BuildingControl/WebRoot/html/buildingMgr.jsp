@@ -2,6 +2,7 @@
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -12,6 +13,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="css/default.css">
 	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.3.5/themes/bootstrap/easyui.css" />
 	<link rel="stylesheet" type="text/css" href="../js/jquery-easyui-1.3.5/themes/icon.css" />
+	<link rel="stylesheet" type="text/css" href="../ol/ol.css" />
 </head>
 <body class="easyui-layout" >
 <div id="body" region="center" > 
@@ -21,11 +23,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div id="dd"><div id="content" region="center" border="false" style="padding: 10px;  border: 1px solid #ccc;"></div>
  
   </div>
+  
+  <div id="mapDlg" class="easyui-dialog" title="地图选点" data-options="iconCls:'icon-save',closed:true" style="width:400px;height:260px;padding:10px">
+        <div id="chooseMap"></div>
+</div>
+
  </body>
 <script type="text/javascript" src="../js/jquery-easyui-1.3.5/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="../js/jquery-easyui-1.3.5/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../js/jquery-easyui-1.3.5/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="../ol/ol.js"></script>
 <script type="text/javascript">
 function getPath() {
 	var pathName = window.document.location.pathname;
@@ -33,7 +41,7 @@ function getPath() {
 			.substring(0, pathName.substr(1).indexOf('/') + 1);
 	return projectName;
 }
-
+var map;//地图
 $(function(){
 	
 	$("#tt").datagrid({
@@ -54,8 +62,8 @@ $(function(){
 				else if(value == '1') return"楼层";
 			}},
 			{field:'createTime',title:'创建时间',width:60,halign:"center", align:"center"},
-			{field:'centerLat',title:'经度坐标',width:60,halign:"center", align:"center"},
-			{field:'centerLng',title:'纬度坐标',width:60,halign:"center", align:"center"},
+			{field:'centerLng',title:'经度坐标',width:60,halign:"center", align:"center"},
+			{field:'centerLat',title:'纬度坐标',width:60,halign:"center", align:"center"},
 		]],
 		showPageList:[10,20,30,40,50],
 		pageNumber: 1, // 初始页数
@@ -96,6 +104,16 @@ $(function(){
 			            handler:function(){
 			                $("#dd").dialog('close');
 			            }
+			        },{
+			            text:'地图选点',
+			            iconCls:'icon-save',
+			            handler:function(){
+			                $("#mapDlg").dialog('open');
+			                if(map==null){
+			                	initMap();
+			                }
+							
+			            }
 			        }]
 			    });
 				$("#content").html(''); // 先将content的内容清空
@@ -103,9 +121,10 @@ $(function(){
 				$.post(getPath()+"/building_addBuilding.action",
 				    function(result){
 						$("#content").append(result);
+						$("#dd").dialog('open').dialog('setTitle', '添加');
+			    		$('#form').form('clear');
 				    });
-				$("#dd").dialog('open').dialog('setTitle', '添加');
-			    $('#form').form('clear');
+				
 			}
 		},{
 			text: '修改',
@@ -156,9 +175,10 @@ $(function(){
 				{"building.id": row.id},
 			    function(result){  
 					$("#content").append(result);
+					$("#dd").dialog('open').dialog('setTitle', '修改');
+					$('#saveform').form('load', row);
 			    });
-			$("#dd").dialog('open').dialog('setTitle', '修改');
-			$('#form').form('load', row);
+			
 		}
 		},{
 			text: '删除',
@@ -184,6 +204,22 @@ $(function(){
 				} else {
 					showMsg('警告','请选择一条记录','alert');
 				}
+			}
+		},'-',{
+			text: '所有大楼',
+			iconCls: 'icon-ok',
+			handler: function(){
+				$('#tt').datagrid({
+					queryParams : {'building.superId':0}
+				});
+			}
+		},{
+			text: '所有楼层',
+			iconCls: 'icon-ok',
+			handler: function(){
+				$('#tt').datagrid({
+					queryParams : {'building.superId':1}
+				});
 			}
 		}],
 		onDblClickRow:function(rowIndex, rowData){
@@ -230,6 +266,82 @@ function viewDetail(data){
 	    });
 	$("#dd").dialog('open').dialog('setTitle', '查看');
 }
+
+
+function initMap(){
+var projection = ol.proj.get("EPSG:4326");
+var projectionExtent = projection.getExtent();
+var size = ol.extent.getWidth(projectionExtent) / 256;
+	var resolutions = new Array(20);
+	var matrixIds = new Array(20);
+	for (var z = 1; z <= 19; ++z) {
+		  // generate resolutions and matrixIds arrays for this WMTS
+		  resolutions[z] = size / Math.pow(2, z);
+		  matrixIds[z] = z;
+		}
+	tileGrid = new ol.tilegrid.WMTS({
+		origin : ol.extent.getTopLeft(projectionExtent),
+		resolutions : resolutions,
+		matrixIds : matrixIds
+	});
+	source =  new ol.source.WMTS({
+		url : 'http://t0.tianditu.com/vec_c/wmts',
+		layer : 'vec',
+
+		// zoomOffset:2,
+		matrixSet : "c",
+		format : 'tiles',
+		projection : projection,
+		tileGrid : tileGrid,
+		style: 'default',
+	    wrapX: true
+	});
+	var raster = new ol.layer.Tile({
+		opacity : 1,
+		extent : projectionExtent,
+		preload: Infinity,
+		source : source
+});
+	var raster2 =  new ol.layer.Tile({
+		opacity : 1,
+		extent : projectionExtent,
+		preload: Infinity,
+		source : new ol.source.WMTS({
+			url : 'http://t0.tianditu.com/cva_c/wmts',
+			layer : 'cva',
+			matrixSet : "c",
+			format : 'tiles',
+			projection : projection,
+			tileGrid : new ol.tilegrid.WMTS({
+				origin : ol.extent
+						.getTopLeft(projectionExtent),
+				resolutions : resolutions,
+				matrixIds : matrixIds
+			}),
+			style: 'default',
+		    wrapX: true
+		})
+});
+
+
+map = new ol.Map({
+  layers: [raster,raster2],
+  target: 'chooseMap',
+  view: new ol.View({
+    projection: 'EPSG:4326',
+    center: [119.2906, 26.04],
+    zoom: 12
+  })
+});
+map.on('click',function(evt){
+	var coord = evt.coordinate;
+	$('#cLng').val(coord[0]);
+	$('#cLat').val(coord[1]);
+	$("#mapDlg").dialog('close');
+})
+
+}
+
 
 </script>
 </html>

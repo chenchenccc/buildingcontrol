@@ -46,11 +46,12 @@ $(function(){
 		fitColumns:true,
 		rownumbers:true,
 		loadMsg : /*showProcess(true, '温馨提示', '正在加载数据, 请稍后...')*/'正在加载数据',
-		url: getPath() + "/autho_listRole.action",  
+		url: getPath() + "/autho_listAutho.action",  
 		columns:[[
-			{field:'authoName',title:'角色名称',width:60,halign:"center", align:"center"},
+			{field:'authoName',title:'权限名称',width:60,halign:"center", align:"center"},
+			{field:'url',title:'URL',width:60,halign:"center", align:"center"},
+			{field:'superName',title:'上级权限',width:60,halign:"center", align:"center"},
 			{field:'description',title:'描述',width:60,halign:"center", align:"center"},
-			{field:'createTime',title:'创建时间',width:60,halign:"center", align:"center"}
 		]],
 		showPageList:[10,20,30,40,50],
 		pageNumber: 1, // 初始页数
@@ -60,86 +61,21 @@ $(function(){
 			text: '添加',
 			iconCls: 'icon-add',
 			handler: function(){
-				$('#dd').dialog({
-			        buttons: [{
-			            text:'保存',
-			            iconCls:'icon-ok',
-			            handler:function(){
-			        		 // 保存添加对象
-			        		var formData=$("#saveform").serialize();
-			        		$.ajax({
-								type: "POST",
-								url: getPath() + '/autho_saveAddRole.action',
-								processData: true,
-								data: formData,
-								success: function(data){
-			        				var result = eval("("+data+")");
-									if (result && result.success) {
-										$('#tt').datagrid('reload');
-										$.messager.show({title : '信息',msg : result.msg});
-									} else {
-										$.messager.show({title : '错误',msg : result.msg});
-									}
-			        			
-								}
-			        		});
-			                $("#dd").dialog('close');
-			            }
-			        },{
-			            text:'取消',
-			            iconCls:'icon-cancel',
-			            handler:function(){
-			                $("#dd").dialog('close');
-			            }
-			        }]
-			    });
+				
 				$("#content").html(''); // 先将content的内容清空
 				// 保存对象
-				$.post(getPath()+"/autho_addRole.action",
+				$.post(getPath()+"/autho_addAutho.action",
 				    function(result){
 						$("#content").append(result);
+						showAddDialog();
 				    });
-				$("#dd").dialog('open').dialog('setTitle', '添加');
-			    $('#form').form('clear');
+				
 			}
 		},{
 			text: '修改',
 			iconCls: 'icon-edit',
 			handler: function(){
-				$('#dd').dialog({
-		        buttons: [{
-		            text:'保存',
-		            iconCls:'icon-ok',
-		            handler:function(){
-		        		var formData=$("#saveform").serialize();
-						// 保存编辑对象		        		
-		        		$.ajax({
-							type: "POST",
-							url: getPath() + '/autho_saveEditRole.action',
-							processData:true,
-							data:formData,
-							success: function(data){
-								var result = eval("("+data+")");
-								if (result && result.success) {
-									$('#tt').datagrid('reload');
-									$.messager.show({title : '信息',msg : result.msg});
-								} else {
-									$.messager.show({title : '错误',msg : result.msg});
-								}
-		        				$('#tt').datagrid('reload');
-							}
-		        		});
-		                $("#dd").dialog('close');
-						$('#tt').datagrid('reload');
-		            }
-		        },{
-		            text:'取消',
-		            iconCls:'icon-cancel',
-		            handler:function(){
-		                $("#dd").dialog('close');
-		            }
-		        }]
-		    });
+				
 			var row = $('#tt').datagrid('getSelected');
 			if(row == null) {
 				showMsg('警告','请选择一条记录','alert');
@@ -147,13 +83,12 @@ $(function(){
 			}
 			$("#content").html(''); // 先将content的内容清空
 			// 获取编辑对象
-			$.post(getPath()+"/autho_editRole.action",
+			$.post(getPath()+"/autho_editAutho.action",
 				{"autho.id": row.id},
 			    function(result){  
 					$("#content").append(result);
+					showEditDialog();
 			    });
-			$("#dd").dialog('open').dialog('setTitle', '修改');
-			$('#form').form('load', row);
 		}
 		},{
 			text: '删除',
@@ -164,7 +99,7 @@ $(function(){
 					function(r) {
 						if (r) {
 							// 删除对象
-							$.post(getPath() + '/autho_delRole.action',
+							$.post(getPath() + '/autho_delAutho.action',
 								{"autho.id" :  row.id},
 								function(json) {
 									var result = eval(json);
@@ -218,14 +153,90 @@ function viewDetail(data){
 	var row = $('#tt').datagrid('getSelected');
 	$("#content").html(''); // 先将content的内容清空
 	// 查看对象
-	$.post(getPath()+"/autho_viewRole.action",
+	$.post(getPath()+"/autho_viewAutho.action",
 		{"autho.id" : row.id },
 	    function(result){ 
 			$("#content").append(result);
 	    });
 	$("#dd").dialog('open').dialog('setTitle', '查看');
 }
+function showAddDialog() {
+	$('#dd').dialog({
+       buttons: [{
+           text:'保存',
+           iconCls:'icon-ok',
+           handler:function(){
+       		 // 保存添加对象
+       		var formData=$("#saveform").serialize();
+       		$.ajax({
+				type: "POST",
+				url: getPath() + '/autho_saveAddAutho.action',
+				processData: true,
+				data: formData,
+				success: function(data){
+       				var result = eval("("+data+")");
+					if (result && result.success) {
+						$('#tt').datagrid('reload');
+						$.messager.show({title : '信息',msg : result.msg});
+					} else {
+						$.messager.show({title : '错误',msg : result.msg});
+					}
+       			
+				}
+       		});
+               $("#dd").dialog('close');
+           }
+       },{
+           text:'取消',
+           iconCls:'icon-cancel',
+           handler:function(){
+               $("#dd").dialog('close');
+           }
+       }]
+   });
+	$("#dd").dialog('open').dialog('setTitle', '添加');
+    $('#form').form('clear');
+}
 
+function showEditDialog() {
+	var row = $('#tt').datagrid('getSelected');
+ 	$('#dd').dialog({
+       buttons: [{
+           text:'保存',
+           iconCls:'icon-ok',
+           handler:function(){
+       		var formData=$("#saveform").serialize();
+			// 保存编辑对象		        		
+       		$.ajax({
+				type: "POST",
+				url: getPath() + '/autho_saveEditAutho.action',
+				processData:true,
+				data:formData,
+				success: function(data){
+					var result = eval("("+data+")");
+					if (result && result.success) {
+						$('#tt').datagrid('reload');
+						$.messager.show({title : '信息',msg : result.msg});
+					} else {
+						$.messager.show({title : '错误',msg : result.msg});
+					}
+       				$('#tt').datagrid('reload');
+				}
+       		});
+               $("#dd").dialog('close');
+			$('#tt').datagrid('reload');
+           }
+       },{
+           text:'取消',
+           iconCls:'icon-cancel',
+           handler:function(){
+               $("#dd").dialog('close');
+           }
+       }]
+   });
+$("#dd").dialog('open').dialog('setTitle', '修改');
+$('#form').form('load', row);
+}
 </script>
 </html>
 	

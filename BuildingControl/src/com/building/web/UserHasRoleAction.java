@@ -25,8 +25,18 @@ public class UserHasRoleAction extends BaseAction{
 	private UserHasRole userHasRole;
     private JSONArray jsonArr = null;
     private JsonConfig jsonConfig = new JsonConfig();	
+    private String roleIds;
 	
-	/**
+    public String getRoleIds() {
+        return roleIds;
+    }
+
+    
+    public void setRoleIds( String roleIds ) {
+        this.roleIds = roleIds;
+    }
+
+    /**
 	  * @Description: 获取实体列表 
 	  */
 	public String listUserHasRole(){
@@ -87,7 +97,20 @@ public class UserHasRoleAction extends BaseAction{
 	  */
 	public String saveAddUserHasRole(){
 		try {
-			userHasRoleServiceProxy.saveAddUserHasRole(userHasRole);
+		    if(roleIds != null) {
+                String[] idArr = roleIds.split( "," );
+                for (String s : idArr) {
+                    userHasRole.setRoleId( Integer.parseInt( s ) );
+                    userHasRole.setId( null );
+                    userHasRole.setUserId( userHasRole.getUserId());
+                    userHasRole.setIsDel( 1 );
+                    UserHasRole ur = userHasRoleServiceProxy.queryUserHasRole4Bean( userHasRole );
+                    if(ur == null) {
+                        userHasRoleServiceProxy.saveAddUserHasRole( userHasRole);
+                    }
+                }
+                
+            }
 			responseJson(true, "添加成功!");
 		} catch (Exception e) {
 			responseJson(false, "添加失败!");
@@ -101,7 +124,7 @@ public class UserHasRoleAction extends BaseAction{
 	  */
 	public String delUserHasRole(){
 		try {
-		    userHasRole.setIsDel( 1 );
+		    userHasRole.setIsDel( 2 );
 			userHasRoleServiceProxy.delUserHasRole(userHasRole);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {

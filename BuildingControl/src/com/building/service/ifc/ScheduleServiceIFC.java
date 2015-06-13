@@ -53,8 +53,6 @@ public interface ScheduleServiceIFC {
 
 	/**
 	 * 执行日程任务
-	 * @author chenrh
-	 *
 	 * @param date
 	 */
     void getScheduleTask( Date date );

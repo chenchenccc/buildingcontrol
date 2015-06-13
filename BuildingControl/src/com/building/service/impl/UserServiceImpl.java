@@ -143,7 +143,10 @@ public class UserServiceImpl implements UserServiceIFC {
         return ret;
     }
 
-
+    @Override
+    public void updataPassword( User user ) {
+        userDao.updateByPrimaryKey( user );
+    }
     
     public UserHasRoleDAO getUserHasRoleDao() {
         return userHasRoleDao;

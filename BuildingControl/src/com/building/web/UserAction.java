@@ -1,5 +1,6 @@
 package com.building.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +12,11 @@ import net.sf.json.JsonConfig;
 import com.building.commons.base.BaseAction;
 import com.building.commons.utils.JsonDateValueProcessor;
 import com.building.commons.utils.RJLog;
+import com.building.model.Role;
 import com.building.model.User;
+import com.building.model.UserHasRole;
+import com.building.service.ifc.RoleServiceIFC;
+import com.building.service.ifc.UserHasRoleServiceIFC;
 import com.building.service.ifc.UserServiceIFC;
 
 @SuppressWarnings("serial")
@@ -20,11 +25,15 @@ public class UserAction extends BaseAction{
 	  * @Description: 业务代理对象 
 	  */
 	private UserServiceIFC userServiceProxy;
+	private RoleServiceIFC roleServiceProxy;
+    private UserHasRoleServiceIFC userHasRoleServiceProxy;
 	
 	/**
 	  * @Description:  实体对象
 	  */
 	private User user;
+	private String oldpass;
+    private String newpass;
 	private JSONArray jsonArr = null;
     private JsonConfig jsonConfig = new JsonConfig();
 	
@@ -118,7 +127,7 @@ public class UserAction extends BaseAction{
 	  */
 	public String delUser(){
 		try {
-		    user.setIsDel( 1 );
+		    user.setIsDel( 2 );
 			userServiceProxy.delUser(user);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {
@@ -140,6 +149,76 @@ public class UserAction extends BaseAction{
         return SUCCESS;
 	}
 	
+	/**
+     * @Description: 添加角色列表
+     */
+   public String addRoleList(){
+       try {
+        // 
+           List<Role> allList = roleServiceProxy.queryRole4List( request, null );
+           request.setAttribute("roleList", allList);
+           jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+           
+           jsonArr= JSONArray.fromObject( allList, jsonConfig );
+           
+           responseJson(true, jsonArr);
+       } catch (Exception e) {
+           responseJson(false, "服务出错了!");
+           e.printStackTrace();
+           RJLog.error(e);
+       }
+       return SUCCESS;
+   }
+   
+   /**
+    * @Description: 角色列表
+    */
+  public String roleList(){
+      try {
+          UserHasRole ur = new UserHasRole();
+          ur.setUserId( user.getId() );
+          List<UserHasRole> list = userHasRoleServiceProxy.queryUserHasRole4List( request, ur  );
+          List<Role> retList = new ArrayList<Role>();
+          for (UserHasRole UserHasRole : list) {
+              Role role = roleServiceProxy.queryRoleById( UserHasRole.getRoleId() );
+              if(role != null) {
+                  retList.add( role );
+              }
+          }
+          request.setAttribute("RoleList", retList);
+          jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+          
+          jsonArr= JSONArray.fromObject( retList, jsonConfig );
+          
+          responseJson(true, jsonArr);
+      } catch (Exception e) {
+          responseJson(false, "服务出错了");
+          e.printStackTrace();
+      }
+      return SUCCESS;
+  }
+   
+   public String updatePassword() throws Exception {
+       // 获取session
+       HttpSession session = request.getSession();
+       User loginUser = (User) session.getAttribute( "loginUser" );
+       if(loginUser == null || loginUser.getId() == null) {
+           responseJson( false, "用户未登录" );
+           return SUCCESS;
+       }
+       
+       Integer id = loginUser.getId();
+       User u = userServiceProxy.queryUserById(id);
+       if( oldpass == null || !oldpass.equals( u.getPassword() )) {
+           responseJson( false, "旧密码错误" );
+           return SUCCESS;
+       }
+       u.setPassword( newpass );
+       userServiceProxy.updataPassword(u);
+       responseJson( true, "密码修改成功" );
+       return SUCCESS;
+   }
+	
 	public UserServiceIFC getUserServiceProxy() {
 		return userServiceProxy;
 	}
@@ -152,4 +231,46 @@ public class UserAction extends BaseAction{
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+    
+    public RoleServiceIFC getRoleServiceProxy() {
+        return roleServiceProxy;
+    }
+
+    
+    public void setRoleServiceProxy( RoleServiceIFC roleServiceProxy ) {
+        this.roleServiceProxy = roleServiceProxy;
+    }
+
+    
+    public UserHasRoleServiceIFC getUserHasRoleServiceProxy() {
+        return userHasRoleServiceProxy;
+    }
+
+    
+    public void setUserHasRoleServiceProxy( UserHasRoleServiceIFC userHasRoleServiceProxy ) {
+        this.userHasRoleServiceProxy = userHasRoleServiceProxy;
+    }
+
+    
+    public String getOldpass() {
+        return oldpass;
+    }
+
+    
+    public void setOldpass( String oldpass ) {
+        this.oldpass = oldpass;
+    }
+
+    
+    public String getNewpass() {
+        return newpass;
+    }
+
+    
+    public void setNewpass( String newpass ) {
+        this.newpass = newpass;
+    }
+	
+	
 }

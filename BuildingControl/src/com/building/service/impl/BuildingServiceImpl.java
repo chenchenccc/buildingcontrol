@@ -32,6 +32,14 @@ public class BuildingServiceImpl implements BuildingServiceIFC {
             example.setLimitEnd(limit);
         }
 		
+		if(building != null && building.getSuperId() != null) {
+		    if(building.getSuperId() == 0) {
+		        criteria.andSuperIdEqualTo( 0 );
+		    } else {
+		        criteria.andSuperIdNotEqualTo( 0 );
+		    }
+		}
+		
 		criteria.andIsDelEqualTo( 1 );
 		return buildingDao.selectByExample(example);
 	}

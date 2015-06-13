@@ -1,5 +1,7 @@
 package com.building.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Schedule {
@@ -109,8 +111,15 @@ public class Schedule {
      * @param scheduleDate  the value for schedule.schedule_date
      * @ibatorgenerated  Tue May 26 21:29:16 CST 2015
      */
-    public void setScheduleDate( Date scheduleDate ) {
-        this.scheduleDate = scheduleDate;
+    public void setScheduleDate( String scheduleDate ) {
+    	SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	
+        try {
+			this.scheduleDate = sm.parse(scheduleDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     /**

@@ -84,6 +84,8 @@
 	
 	<bean name="aliasUserAction" class="com.building.web.UserAction" scope="prototype">
 		<property name="userServiceProxy" ref="userServiceProxy"></property>
+		<property name="userHasRoleServiceProxy" ref="userHasRoleServiceProxy"></property>
+		<property name="roleServiceProxy" ref="roleServiceProxy"></property>
 	</bean>
 	
 	
@@ -112,6 +114,8 @@
 	</bean>
 	
 	<bean id="roleService" class="com.building.service.impl.RoleServiceImpl">
+		<property name="authoDao" ref="authoDao"></property>
+		<property name="roleHasAuthoDao" ref="roleHasAuthoDao"></property>
 		<property name="roleDao" ref="roleDao"></property>
 	</bean>
 	
@@ -121,6 +125,8 @@
 	
 	<bean name="aliasRoleAction" class="com.building.web.RoleAction" scope="prototype">
 		<property name="roleServiceProxy" ref="roleServiceProxy"></property>
+		<property name="authoServiceProxy" ref="authoServiceProxy"></property>
+		<property name="roleHasAuthoServiceProxy" ref="roleHasAuthoServiceProxy"></property>
 	</bean>
 	
 	

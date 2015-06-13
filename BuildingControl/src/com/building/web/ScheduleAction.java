@@ -34,32 +34,37 @@ public class ScheduleAction extends BaseAction{
 	  */
 	private Schedule schedule;
     private JSONArray jsonArr = null;
-    private JsonConfig jsonConfig = new JsonConfig();	
+    private JsonConfig jsonConfig = new JsonConfig();
 	
 	/**
 	  * @Description: 获取实体列表 
 	  */
 	public String listSchedule(){
-		List<Schedule> scheduleList = scheduleServiceProxy.querySchedule4List(request,schedule);
-		List<Schedule> retScheduleList = new ArrayList<Schedule>();
-		// 获取关联deviceName
-		for (Schedule s : scheduleList) {
-		    Device d = deviceServiceProxy.queryDeviceById( s.getDeviceId() );
-		    Building b = buildingServiceProxy.queryBuildingById( d.getBuildingId().intValue() );
-		    if(b != null && b.getSuperId() != 0) {
-		        Building superb = buildingServiceProxy.queryBuildingById( b.getSuperId() );
-		        b.setBuildingName( superb.getBuildingName() + ">" + b.getBuildingName() );
-		    }
-		    s.setBuildingName( b.getBuildingName() );
-		    s.setDeviceName( d.getDeviceName() );
-		    retScheduleList.add( s );
+	    try {
+	        List<Schedule> scheduleList = scheduleServiceProxy.querySchedule4List(request,schedule);
+	        List<Schedule> retScheduleList = new ArrayList<Schedule>();
+	        // 获取关联deviceName
+	        for (Schedule s : scheduleList) {
+	            Device d = deviceServiceProxy.queryDeviceById( s.getDeviceId() );
+	            Building b = buildingServiceProxy.queryBuildingById( d.getBuildingId().intValue() );
+	            if(b != null && b.getSuperId() != 0) {
+	                Building superb = buildingServiceProxy.queryBuildingById( b.getSuperId() );
+	                b.setBuildingName( superb.getBuildingName() + ">" + b.getBuildingName() );
+	            }
+	            s.setBuildingName( b.getBuildingName() );
+	            s.setDeviceName( d.getDeviceName() );
+	            retScheduleList.add( s );
+	        }
+	        request.setAttribute("scheduleList", retScheduleList);
+	        jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+	        
+	        jsonArr= JSONArray.fromObject( retScheduleList, jsonConfig );
+	        
+	        responseJson(scheduleServiceProxy.countByExample(schedule), jsonArr);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-		request.setAttribute("scheduleList", retScheduleList);
-		jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
-        
-        jsonArr= JSONArray.fromObject( retScheduleList, jsonConfig );
-        
-        responseJson(scheduleServiceProxy.countByExample(schedule), jsonArr);
         return SUCCESS;
 	}
 	

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.building.model.Autho;
 import com.building.model.Role;
 
 public interface RoleServiceIFC {
@@ -48,5 +49,14 @@ public interface RoleServiceIFC {
 	 * @Description: 根据ID查询对象
 	 */
 	Role queryRoleById( Integer id);
+
+
+	/**
+     * 获取权限列表
+     *
+     * @param roleIds
+     * @return
+     */
+    public List<Autho> getAuthoList( List<Integer> roleIds );
 	
 }

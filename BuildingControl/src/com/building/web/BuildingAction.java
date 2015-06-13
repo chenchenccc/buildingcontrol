@@ -52,6 +52,7 @@ public class BuildingAction extends BaseAction{
             retBuildingList.add( building );
         }
 		request.setAttribute("buildingList", buildingList);
+		request.getSession().setAttribute("buildingList", buildingList);
         jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
         
         jsonArr= JSONArray.fromObject( buildingList, jsonConfig );
@@ -91,6 +92,9 @@ public class BuildingAction extends BaseAction{
                 building.setUpdateUserId( loginUser.getId() );
             }
             building.setUpdateTime( new Date() );
+            if(building.getIsDel()!=null){
+            	building.setIsDel(1);
+            }
 			buildingServiceProxy.saveEditBuilding(building);
 			responseJson(true, "修改成功!");
 		} catch (Exception e) {
@@ -118,7 +122,11 @@ public class BuildingAction extends BaseAction{
             if(loginUser != null) {
                 building.setCreateUserId( loginUser.getId() );
             }
+//            building.setBuildingName(building.getBuildingName().t)
             building.setCreateTime( new Date() );
+            if(building.getBuildingType()==0){
+            	building.setSuperId(0);
+            }
 			buildingServiceProxy.saveAddBuilding(building);
 			responseJson(true, "添加成功!");
 		} catch (Exception e) {
@@ -133,7 +141,7 @@ public class BuildingAction extends BaseAction{
 	  */
 	public String delBuilding(){
 		try {
-		    building.setIsDel( 1 );
+		    building.setIsDel( 2 );
 			buildingServiceProxy.delBuilding(building);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {
@@ -181,12 +189,14 @@ public class BuildingAction extends BaseAction{
             // 获取楼宇对象
             for (Integer buildingId : buildingIds) {
                 b = buildingServiceProxy.queryBuildingById( buildingId );
-                buildingTree = new ZTreeBean();
-                buildingTree.setId(b.getId());
-                buildingTree.setName(b.getBuildingName());
-                buildingTree.setOpen(Boolean.TRUE);
-                buildingTree.setpId(b.getSuperId());
-                ztreeList.add(buildingTree);
+                if(b.getIsDel() == 1) {
+                	buildingTree = new ZTreeBean();
+                	buildingTree.setId(b.getId());
+                	buildingTree.setName(b.getBuildingName());
+                	buildingTree.setOpen(Boolean.TRUE);
+                	buildingTree.setpId(b.getSuperId());
+                	ztreeList.add(buildingTree);
+                }
             }
            
             if(ztreeList == null || ztreeList.size() == 0) {
@@ -201,6 +211,29 @@ public class BuildingAction extends BaseAction{
 	    }
 	    return SUCCESS;
 	}
+	
+	/**
+	 * 所有楼层 
+	 * @return
+	 */
+	public String allBuilding(){
+        try {
+            building = new Building();
+            building.setSuperId( 0 ); // 设置superId为0 为大楼
+            building.setIsDel( 1 ); 
+            List<Building> buildingList = buildingServiceProxy.queryBuilding4List(request,building);
+            jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+            
+            jsonArr= JSONArray.fromObject( buildingList, jsonConfig );
+            
+            responseJson(buildingServiceProxy.countByExample(building), jsonArr);
+        } catch (Exception e) {
+            responseJson(false, "失败!");
+            RJLog.error(e);
+        }
+        return SUCCESS;
+    }
+	
 	
 	public BuildingServiceIFC getBuildingServiceProxy() {
 		return buildingServiceProxy;

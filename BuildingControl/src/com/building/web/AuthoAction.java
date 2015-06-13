@@ -1,5 +1,6 @@
 package com.building.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,13 +31,28 @@ public class AuthoAction extends BaseAction{
 	  * @Description: 获取实体列表 
 	  */
 	public String listAutho(){
-		List<Autho> authoList = authoServiceProxy.queryAutho4List(request,autho);
-		request.setAttribute("authoList", authoList);
-        jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
-        
-        jsonArr= JSONArray.fromObject( authoList, jsonConfig );
-        
-        responseJson(authoServiceProxy.countByExample(autho), jsonArr);
+	    try {
+	        List<Autho> authoList = authoServiceProxy.queryAutho4List(request,autho);
+	        List<Autho> retList = new ArrayList<Autho>();
+	        for (Autho autho : authoList) {
+	            Autho superAutho = authoServiceProxy.queryAuthoById( autho.getSuperId() );
+	            if(superAutho == null) {
+	                autho.setSuperName( "无" );
+	            } else {
+	                autho.setSuperName( superAutho.getAuthoName() );
+	            }
+	            retList.add( autho );
+	        }
+	        request.setAttribute("authoList", retList);
+	        jsonConfig.registerJsonValueProcessor(Date.class, new JsonDateValueProcessor()); // 默认 yyyy-MM-dd hh:mm:ss
+	        
+	        jsonArr= JSONArray.fromObject( retList, jsonConfig );
+	        
+	        responseJson(authoServiceProxy.countByExample(autho), jsonArr);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return SUCCESS;
 	}
 	
@@ -65,6 +81,7 @@ public class AuthoAction extends BaseAction{
 	  */
 	public String saveEditAutho(){
 		try {
+		    autho.setIsDel( 1 );
 			authoServiceProxy.saveEditAutho(autho);
 			responseJson(true, "修改成功!");
 		} catch (Exception e) {
@@ -87,6 +104,7 @@ public class AuthoAction extends BaseAction{
 	  */
 	public String saveAddAutho(){
 		try {
+		    autho.setIsDel( 1 );
 			authoServiceProxy.saveAddAutho(autho);
 			responseJson(true, "添加成功!");
 		} catch (Exception e) {
@@ -101,6 +119,7 @@ public class AuthoAction extends BaseAction{
 	  */
 	public String delAutho(){
 		try {
+			autho.setIsDel(2);
 			authoServiceProxy.delAutho(autho);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {

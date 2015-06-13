@@ -18,9 +18,18 @@ public class RoleHasAuthoAction extends BaseAction{
 	  * @Description:  实体对象
 	  */
 	private RoleHasAutho roleHasAutho;
+	private String authoIds;
 	
-	
-	/**
+    public String getAuthoIds() {
+        return authoIds;
+    }
+
+    
+    public void setAuthoIds( String authoIds ) {
+        this.authoIds = authoIds;
+    }
+
+    /**
 	  * @Description: 获取实体列表 
 	  */
 	public String listRoleHasAutho(){
@@ -76,7 +85,19 @@ public class RoleHasAuthoAction extends BaseAction{
 	  */
 	public String saveAddRoleHasAutho(){
 		try {
-			roleHasAuthoServiceProxy.saveAddRoleHasAutho(roleHasAutho);
+		    if(authoIds != null) {
+                String[] idArr = authoIds.split( "," );
+                for (String s : idArr) {
+                    roleHasAutho.setAuthoId( Integer.parseInt( s ) );
+                    roleHasAutho.setId( null );
+                    roleHasAutho.setIsDel( 1 );
+                    RoleHasAutho ur = roleHasAuthoServiceProxy.queryRoleHasAutho4Bean( roleHasAutho );
+                    if(ur == null) {
+                        roleHasAuthoServiceProxy.saveAddRoleHasAutho( roleHasAutho);
+                    }
+                }
+                
+            }
 			responseJson(true, "添加成功!");
 		} catch (Exception e) {
 			responseJson(false, "添加失败!");
@@ -90,6 +111,7 @@ public class RoleHasAuthoAction extends BaseAction{
 	  */
 	public String delRoleHasAutho(){
 		try {
+		    roleHasAutho.setIsDel( 2 );
 			roleHasAuthoServiceProxy.delRoleHasAutho(roleHasAutho);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {

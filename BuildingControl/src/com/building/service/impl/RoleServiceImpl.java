@@ -1,13 +1,18 @@
 package com.building.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.building.commons.global.PageBean;
+import com.building.dao.ifc.AuthoDAO;
 import com.building.dao.ifc.RoleDAO;
+import com.building.dao.ifc.RoleHasAuthoDAO;
+import com.building.model.Autho;
 import com.building.model.Role;
 import com.building.model.RoleExample;
+import com.building.model.RoleHasAutho;
+import com.building.model.RoleHasAuthoExample;
 import com.building.model.RoleExample.Criteria;
 import com.building.service.ifc.RoleServiceIFC;
 
@@ -16,6 +21,8 @@ public class RoleServiceImpl implements RoleServiceIFC {
 	 * @Description: DAO对象 
 	 */
 	private RoleDAO roleDao;
+	private RoleHasAuthoDAO roleHasAuthoDao;
+    private AuthoDAO authoDao;
 	
 	/**
 	 * @Description: 获取实体列表 
@@ -100,4 +107,48 @@ public class RoleServiceImpl implements RoleServiceIFC {
 	public void setRoleDao(RoleDAO roleDao) {
 		this.roleDao = roleDao;
 	}
+
+
+	public List<Autho> getAuthoList( List<Integer> roleIds ) {
+        if(roleIds == null || roleIds.size() == 0) {
+            return null;
+        }
+        RoleHasAuthoExample example = new RoleHasAuthoExample();
+        RoleHasAuthoExample.Criteria criteria = example.createCriteria();
+        criteria.andRoleIdIn( roleIds );
+        criteria.andIsDelEqualTo( 1 );
+        List<RoleHasAutho> list = roleHasAuthoDao.selectByExample( example  );
+        
+        List<Autho> ret = new ArrayList<Autho>();
+        for (RoleHasAutho ra : list) {
+            ret.add( authoDao.selectByPrimaryKey( ra.getAuthoId() ) );
+        }
+        return ret;
+    }
+
+
+    
+    public RoleHasAuthoDAO getRoleHasAuthoDao() {
+        return roleHasAuthoDao;
+    }
+
+
+    
+    public void setRoleHasAuthoDao( RoleHasAuthoDAO roleHasAuthoDao ) {
+        this.roleHasAuthoDao = roleHasAuthoDao;
+    }
+
+
+    
+    public AuthoDAO getAuthoDao() {
+        return authoDao;
+    }
+
+
+    
+    public void setAuthoDao( AuthoDAO authoDao ) {
+        this.authoDao = authoDao;
+    }
+	
+	
 }

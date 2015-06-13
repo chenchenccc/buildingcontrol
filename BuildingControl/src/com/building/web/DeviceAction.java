@@ -148,7 +148,7 @@ public class DeviceAction extends BaseAction{
                 responseJson( false, "参数错误！" );
                 return SUCCESS;
             }
-		    device.setIsDel( 1 );
+		    device.setIsDel( 2 );
 			deviceServiceProxy.delDevice(device);
 			responseJson(true, "删除成功!");
 		} catch (Exception e) {

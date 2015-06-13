@@ -131,6 +131,19 @@ $(function(){
 					showMsg('警告','请选择一条记录','alert');
 				}
 			}
+			
+		},'-',{
+			text: '角色',
+			iconCls: 'icon-ok',
+			handler: function(){
+				row = $('#tt').datagrid('getSelected');
+				if (row) {
+					//查看角色
+					viewRole();
+				} else {
+					showMsg('警告','请选择一条记录','alert');
+				}
+			}
 		},'-',{
 			text: '帮助',
 			iconCls: 'icon-help',
@@ -180,7 +193,114 @@ function viewDetail(data){
 	    });
 	$("#dd").dialog('open').dialog('setTitle', '查看');
 }
-
+/**
+ * 查看角色
+ */
+function viewRole(){
+	var row = $('#tt').datagrid('getSelected');
+	$("#content").html(''); // 先将content的内容清空
+	$("#content").append('<font color="red">'+row.username+'</font>拥有如下角色：<br/>')
+	// 查看角色
+	$.post(getPath() + '/user_roleList.action',
+		{"user.id" :  row.id},
+		function(json) {
+			var result = eval(json);
+			console.log(result);
+			if (result && result.success) {
+				// $('#tt').datagrid('reload'); 
+				var data = result.msg;
+				for(var i in data) {
+					$("#content").append("<a onclick='delRole("+data[i].id+")'>"+data[i].roleName+", ");
+				}
+				
+				$("#content").append("<hr />添加角色");
+				
+				$.post(getPath() + '/user_addRoleList.action',
+					{"user.id" :  row.id},
+					function(json) {
+						var result = eval(json);
+						console.log(result);
+						if (result && result.success) {
+							// $('#tt').datagrid('reload'); 
+							var data = result.msg;
+							for(var i in data) {
+								$("#content").append('<input type="checkbox" name="role" value="'+data[i].id+'">'+data[i].roleName);
+							}
+						} else {
+							$.messager.show({title : 'Error',msg : result.msg});
+						}
+					},'json');
+			} else {
+				$.messager.show({title : 'Error',msg : result.msg});
+			}
+		},'json');
+	
+	
+	////
+	$('#dd').dialog({
+        buttons: [{
+            text:'确定',
+            iconCls:'icon-ok',
+            handler:function(){
+            	saveRole();
+                $("#dd").dialog('close');
+            }
+        }]
+    });
+	////
+	$("#dd").dialog('open').dialog('setTitle', '查看角色');
+}
+function saveRole() {
+	var row = $('#tt').datagrid('getSelected');
+	var result = new Array();
+    $("[name = role]:checkbox").each(function () {
+        if ($(this).is(":checked")) {
+            result.push($(this).attr("value"));
+        }
+    });
+    //alert(result.join(","));
+    // 删除对象
+	$.post(getPath()+"/userHasRole_saveAddUserHasRole.action",
+		{"userHasRole.userId" : row.id, "roleIds": result.join(",") },
+	    function(result){ 
+			//$("#content").append(result);
+			var json = eval("("+result+")");
+			console.log(json);
+			if (json && json.success) {
+				//	$('#tt').datagrid('reload'); ;
+				viewRole();
+				$("#dd").dialog('close');
+				$.messager.show({title : 'Info',msg : "添加角色成功！"});
+			} else {
+				$.messager.show({title : 'Error',msg : json.msg});
+			}
+	    });
+}
+function delRole(id) {
+	var row = $('#tt').datagrid('getSelected');
+	$.messager.confirm('警告','确定取消该角色？',
+	function(r) {
+		if (r) {
+			// 删除对象
+			$.post(getPath()+"/userHasRole_delUserHasRole.action",
+				{"userHasRole.userId" : row.id, "userHasRole.roleId": id },
+			    function(result){ 
+					//$("#content").append(result);
+					
+					var json = eval("("+result+")");
+					console.log(json);
+					if (json && json.success) {
+						//	$('#tt').datagrid('reload'); ;
+						viewRole();
+						$.messager.show({title : 'Info',msg : "取消权限成功！"});
+					} else {
+						$.messager.show({title : 'Error',msg : json.msg});
+					}
+			    });
+		}
+	});
+	
+}
 </script>
 </html>
 	

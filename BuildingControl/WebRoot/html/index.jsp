@@ -55,9 +55,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="easyui-layout" fit="true">
 		<div region="center" border="false" style="padding: 10px;  border: 1px solid #ccc;">
 			<table cellpadding='2'>
-				<tr><td>旧密码：</td><td><input id="txtOldPass" type="password" /></td></tr>
-				<tr><td>新密码：</td><td><input id="txtNewPass" type="password" /></td></tr>
-				<tr><td>确认密码：</td><td><input id="txtRePass" type="password" /></td></tr>
+				<tr><td>旧密码：</td><td><input id="oldpassword" type="password" /></td></tr>
+				<tr><td>新密码：</td><td><input id="newpassword" type="password" /></td></tr>
+				<tr><td>确认密码：</td><td><input id="confirmpassword" type="password" /></td></tr>
 			</table>
 		</div>
 	</div>
@@ -131,7 +131,8 @@ $.getJSON("timerScheduleAction",function(jsonMap){
 });
 var zNodes;
 $(function() {
-	//zNodes = ${loginModuleList };
+	// 后台动态autho，loginAction的返回值
+	// zNodes = ${ loginAuthoList };
 	zNodes =[
 		{ id:1, pId:0, name:"系统管理", open:true},
 		{ id:11, pId:1, name:"用户管理", file:"/html/userMgr.jsp"},
@@ -336,9 +337,9 @@ function close() {
 
 //修改密码
 function serverLogin() {
-	var oldpass = $('#txtOldPass');
-	var newpass = $('#txtNewPass');
-	var rePass = $('#txtRePass');
+	var oldpass = $('#oldpassword');
+	var newpass = $('#newpassword');
+	var rePass = $('#confirmpassword');
 
 	if (oldpass.val() === '') {
 		showMsg('系统提示', '请输入旧密码！', 'warning');
@@ -357,17 +358,14 @@ function serverLogin() {
 		showMsg('系统提示', '两次密码不一至！请重新输入', 'warning');
 		return false;
 	}
-
-	showMsg('系统提示', '恭喜，密码修改成功！<br>您的新密码为：'+newpass.val(), 'info');
-	close();
 	
-/*	$.post('/ajax/editpassword.ashx?newpass=' + newpass.val(), function(msg) {
-		msgShow('系统提示', '恭喜，密码修改成功！<br>您的新密码为：' + msg, 'info');
+	$.post(getPath() + '/user_updatePassword.action',{'oldpass':oldpass.val(),'newpass':newpass.val()}, function(result) {
+		var json = eval('('+result+')');
+		showMsg('系统提示', json.msg, 'info');
 		newpass.val('');
 		rePass.val('');
 		close();
-	})*/
-
+	})
 }
 
 </script>
